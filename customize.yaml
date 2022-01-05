@@ -1,0 +1,43 @@
+person.lubos:
+  entity_picture: /local/fotky/LNO.jpg
+device_tracker.sm_g975f:
+  entity_picture: /local/fotky/LNO.jpg
+person.diana:
+  entity_picture: /local/fotky/DIA.jpg
+device_tracker.iphone_uzivatela_diana:
+  entity_picture: /local/fotky/DIA.jpg
+sensor.tv_zasuvka_energy_total:
+  device_class: energy
+  state_class: total_increasing
+
+  friendly_name: TV Obyvacka
+sensor.spotreba_bytu_total:
+  state_class: total_increasing
+
+sensor.0x588e81fffedb88a1_energy:
+  friendly_name: Synology
+  device_class: energy
+  state_class: total_increasing
+
+sensor.pracka_zasuvka_energy_total:
+  friendly_name: Pracka
+  device_class: energy
+  state_class: total_increasing
+
+sensor.susicka_zasuvka_energy_total:
+  friendly_name: Susicka
+  device_class: energy
+  state_class: total_increasing
+
+sensor.pracovna_energy_total:
+  friendly_name: Pracovna
+  device_class: energy
+  state_class: total_increasing
+
+sensor.stara_pracovna_energy_total:
+  friendly_name: Balkon
+  device_class: energy
+  state_class: total_increasing
+  
+
+

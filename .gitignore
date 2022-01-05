@@ -1,0 +1,23 @@
+# Example .gitignore file for your config dir.
+# An * ensures that everything will be ignored.
+*
+# You can whitelist files/folders with !, these will not be ignored.
+!*.yaml
+!.gitignore
+!*.md
+!.HA_VERSION
+!blueprints
+
+# Ignore folders.
+.storage
+.cloud
+.google.token
+custom_components
+deps
+www
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+known_devices.yaml
+secrets.yaml
+Smart_Home-ed4f558b2000.json

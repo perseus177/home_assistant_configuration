@@ -1,0 +1,409 @@
+# Zigbee MQTT  
+  - platform: mqtt
+    name: Bridge state
+    state_topic: "zigbee2mqtt/bridge/state"
+    icon: mdi:router-wireless
+
+########## Spalna    
+  - platform: mqtt  
+    name: Radiator Spalna Pozicia
+    state_topic: "zigbee2mqtt/0xbc33acfffe37e579"
+    value_template: '{{ value_json.position }}'    
+    
+  - platform: mqtt  
+    name: Radiator Spalna Heat SetPoint
+    state_topic: "zigbee2mqtt/0xbc33acfffe37e579"
+    value_template: '{{ value_json.current_heating_setpoint }}'      
+
+########## Obyvacka    
+  - platform: mqtt  
+    name: Radiator Obyvacka Pozicia
+    state_topic: "zigbee2mqtt/0x60a423fffea0fc8f"
+    value_template: '{{ value_json.position }}'   
+    
+  - platform: mqtt  
+    name: Radiator Obyvacka Heat SetPoint
+    state_topic: "zigbee2mqtt/0x60a423fffea0fc8f"
+    value_template: '{{ value_json.current_heating_setpoint }}'     
+
+########## Pracovna  
+  - platform: mqtt  
+    name: Radiator Pracovna Pozicia
+    state_topic: "zigbee2mqtt/0x60a423fffea3a842"
+    value_template: '{{ value_json.position }}' 
+
+  - platform: mqtt  
+    name: Radiator Pracovna Heat SetPoint
+    state_topic: "zigbee2mqtt/0x60a423fffea3a842"
+    value_template: '{{ value_json.current_heating_setpoint }}'  
+
+########## Statisticky senzor vonku  
+  - platform: statistics
+    entity_id: sensor.0x00158d00025e9bcf_temperature
+    name: Vonku_Teplota_STAT
+    max_age:
+        hours: 24 
+    sampling_size: 200  
+
+    
+
+    
+
+  
+
+  #==============================
+  #=== Installed hass.io version
+  #==============================
+  - platform: version
+    name: Installed Version
+
+  #================================
+  #=== Latest Available HA Version
+  #================================
+  - platform: version
+    name: Latest Available Version
+    beta: false
+    image: raspberrypi3
+    source: docker
+    
+
+  #=============================================
+  #=== Last boot time, Disk, memory & CPU usage
+  #=============================================
+  - platform: systemmonitor
+    resources:
+      - type: last_boot
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: processor_use
+      - type: disk_use
+        arg: /      
+      - type: disk_free    
+        arg: /      
+
+  
+  #====================
+  #=== CPU Temperature
+  #====================
+  - platform: command_line
+    name: CPU Temp
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) | round(0) }}'
+
+
+  #===================
+  #=== System Up Time
+  #===================
+  - platform: uptime
+
+
+  - platform: template
+    sensors:
+
+      #==========================
+      #=== Home Assistant uptime
+      #==========================
+      ha_uptime:
+        friendly_name: HA Uptime
+        value_template: >
+         {% set up_time =  as_timestamp(now()) - as_timestamp(states('sensor.uptime')) %}
+
+         {% if up_time == 0 %}
+          Just restarted...
+         {% else %}
+           {% set minutes = (up_time // 60) | int %}
+           {% set hours = (minutes // 60) %}
+           {% set days = (hours // 24) %}
+           {% set weeks = (days // 7) %}
+
+           {% set minutes = (minutes % 60) %}
+           {% set hours =  (hours % 24) %}
+           {% set days = (days % 7) %}
+ 
+           {% macro phrase(value, name) %}
+                    {%- set value = value %}
+                    {%- set end = 's' if value > 1 else '' %}
+                    {{- '{} {}{}'.format(value, name, end) if value | int > 0 else '' }}
+           {%- endmacro %}
+
+           {% set text = [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') %}
+           {% set last_comma = text.rfind(',') %}
+           {% if last_comma != -1 %}
+             {% set text = text[:last_comma] + ' and' + text[last_comma + 1:] %}
+           {% endif %}
+
+         {{ text }}
+
+         {% endif %}
+
+
+
+
+      #=========================================
+      #=== Raspberry Pi last boot date and time
+      #=========================================
+      last_boot_date_time:
+        friendly_name: Last Boot
+        value_template: >
+          {% set date = as_timestamp(states('sensor.last_boot')) | timestamp_custom('%d') %}
+          {% set date = '{:01}'.format(date | int) %}
+          {% if date in ('1', '21', '31') %}
+            {% set date = date ~ 'st' %}
+          {% elif date in ('2', '22') %}
+            {% set date = date ~ 'nd' %}
+          {% elif date in ('3', '23') %}
+            {% set date = date ~ 'rd' %}
+          {% else %}
+            {% set date = date ~ 'th' %}
+          {% endif %}
+
+          {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%H:%M on %a') }} {{ date }} {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%b %Y') }}
+
+
+      #=========================
+      #=== Raspberry Pi Up Time
+      #=========================
+      rpi_uptime:
+        friendly_name: RPi Uptime
+        value_template: >
+          {% set up_time = as_timestamp(now()) - as_timestamp(states('sensor.last_boot')) %}
+
+          {% set minutes = (up_time // 60) | int %}
+          {% set hours = (minutes // 60) %}
+          {% set days = (hours // 24) %}
+          {% set weeks = (days // 7) %}
+
+          {% set minutes = (minutes % 60) %}
+          {% set hours =  (hours % 24) %}
+          {% set days = (days % 7) %}
+
+          {% macro phrase(value, name) %}
+                    {%- set value = value %}
+                    {%- set end = 's' if value > 1 else '' %}
+                    {{- '{} {}{}'.format(value, name, end) if value | int > 0 else '' }}
+          {%- endmacro %}
+                    
+          {% set text = [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') %}
+          {% set last_comma = text.rfind(',') %}
+          {% if last_comma != -1 %}
+            {% set text = text[:last_comma] + ' and' + text[last_comma + 1:] %}
+          {% endif %}
+          
+          {{ text }}    
+          
+          
+          
+          
+  - platform: template
+    sensors:
+
+    #----- Count Automations
+      count_automations:
+        value_template: "{{ states.automation | list | length }}"
+
+    #----- Count Scripts
+      count_scripts:
+        value_template: "{{ states.script| list | length }}"
+
+    #----- Count Device Trackers
+      count_device_trackers:
+        value_template: "{{ states.device_tracker | list | length }}"
+
+    #----- Count Binary Sensors
+      count_binary_sensors:
+        value_template: "{{ states.binary_sensor| list | length }}"
+
+    #----- Count Sensors
+      count_sensors:
+        value_template: "{{ states.sensor | list | length }}"
+
+    #----- Count Switches
+      count_switches:
+        value_template: "{{ states.switch | list | length }}"
+
+    #----- Count Zones
+      count_zones:
+        value_template: "{{ states.zone | list | length }}"
+
+    #----- Input Booleans
+      count_input_booleans:
+        value_template: "{{ states.input_boolean | list | length }}"
+
+    #----- Input Numbers
+      count_input_numbers:
+        value_template: "{{ states.input_number | list | length }}"
+
+    #----- Input Texts
+      count_input_texts:
+        value_template: "{{ states.input_text | list | length }}"
+
+    #----- Input Selects
+      count_input_selects:
+        value_template: "{{ states.input_select | list | length }}"
+
+    #----- Input Date Times
+      count_input_datetimes:
+        value_template: "{{ states.input_datetime | list | length }}"   
+        
+    #----- Lights
+      count_lights:
+        value_template: "{{ states.light | list | length }}"        
+        
+        
+################################################Spotreba v eur
+  - platform: template
+    sensors:
+
+
+     tv_dnesna_spotreba:
+      friendly_name: "TV Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'
+      
+     tv_vcerajsia_spotreba:
+      friendly_name: "TV Vcerajsia Spotreba"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'    
+      
+     tv_total_spotreba:
+      friendly_name: "TV Total Spotreba"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'      
+      
+     obyvacka_predlzovacka_dnesna_spotreba:
+      friendly_name: "Predlzovacka Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovackaa_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'
+      
+     obyvacka_predlzovacka_vcerajsia_spotreba:
+      friendly_name: "Predlzovacka Vcerajsia Spotreba"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'    
+      
+     obyvacka_predlzovacka_total_spotreba:
+      friendly_name: "Predlzovacka Total Spotreba"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'  
+      
+     pracovna_dnesna_spotreba:
+      friendly_name: "Pracovna Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.pracovna_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'
+      
+     pracovna_vcerajsia_spotreba:
+      friendly_name: "Pracovna Vcerajsia Spotreba"
+      value_template: "{{ (( states('sensor.pracovna_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'    
+      
+     pracovna_total_spotreba:
+      friendly_name: "Pracovna Total Spotreba"
+      value_template: "{{ (( states('sensor.pracovna_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'      
+
+     pracka_dnesna_spotreba:
+      friendly_name: "Pracka Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'      
+      
+     pracka_total_spotreba:
+      friendly_name: "Pracka Total Spotreba"
+      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'  
+      
+     susicka_dnesna_spotreba:
+      friendly_name: "Susicka Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'           
+      
+     susicka_total_spotreba:
+      friendly_name: "Susicka Total Spotreba"
+      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'
+      
+     balkon_dnesna_spotreba:
+      friendly_name: "Balkon Dnesna Spotreba"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'
+      
+     balkon_vcerajsia_spotreba:
+      friendly_name: "Balkon Vcerajsia Spotreba"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'    
+      
+     balkon_total_spotreba:
+      friendly_name: "Balkon Total Spotreba"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'            
+      
+################################################Teplomery
+
+     teplomer_spalna:
+      friendly_name: "Teplomer Spalna"
+      value_template: "{{ (( states('sensor.mi_t_4c65a8dfc04a')|int -2 ))}}"
+      
+     teplomer_obyvacka:
+      friendly_name: "Teplomer Obyvacka"
+      value_template: "{{ (( states('sensor.mi_t_4c65a8d0b9be')|int -2 ))}}"    
+      
+
+################################################ Xiaomi Kettle      
+
+     xiaomi_kettle_state:
+      friendly_name: "Kettle stav"
+      value_template: >-
+        {% if is_state_attr('binary_sensor.ble_switch_ac9a22f296d0', 'status', 'kettle is idle') %}
+          Kanvica je vypnuta
+        {% elif is_state_attr('binary_sensor.ble_switch_ac9a22f296d0', 'status', 'kettle is heating') %}
+          Kanvica zohrieva vodu
+        {% elif is_state_attr('binary_sensor.ble_switch_ac9a22f296d0', 'status', 'warming function active with boiling') %}
+          Voda zovrela - udrziavam 
+        {% else %}
+          Failed
+        {% endif %}    
+        
+################################################ Min Max temperature      
+
+    
+     teplota_vonku_max: 
+      friendly_name: "Teplota Vonku Max"
+      value_template:  "{{ ((state_attr('sensor.vonku_teplota_stat', 'max_value'))) }}"
+     
+     teplota_vonku_min:    
+      friendly_name: "Teplota Vonku Min"    
+      value_template:  "{{ ((state_attr('sensor.vonku_teplota_stat', 'min_value'))) }}"
+
+################################################ Pozicia zaluzii 
+
+     pozicia_zaluzie: 
+      friendly_name: "Pozicia zaluzie"
+      value_template:  "{{ ((state_attr('cover.0x5c0272fffedfd8a2', 'position'))) }}"
+
+    
+        
+        
+        
+      
+      
+                  
+            
+      
+      
+      
+      
+      
+
+    
+
+        
+
+
+        
+          
+          
+          
+          
+          
+          
+          

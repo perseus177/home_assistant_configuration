@@ -1,0 +1,279 @@
+homeassistant:
+  name: Home
+  latitude: 48.155240
+  longitude: 17.168935
+  elevation: 136
+  unit_system: metric
+  time_zone: Europe/Prague
+  customize: !include customize.yaml
+  external_url: !secret external_url
+  internal_url: !secret internal_url
+
+    
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: 
+  - 127.0.0.1
+  - 172.30.33.4
+  - 172.30.33.5  
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_translate_say
+    language: 'sk'
+
+group: !include groups.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+automation: !include automations.yaml
+sensor: !include sensors.yaml
+
+recorder:
+  purge_keep_days: 2
+  exclude:
+    domains:
+      - automation
+      - updater
+    entity_globs:
+      - sensor.weather_*
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.date
+    event_types:
+      - call_service # Don't record service calls  
+  
+  
+  
+logger:
+  default: warn
+  logs:
+    homeassistant.components.denonavr.receiver: fatal
+    homeassistant.components.denonavr.media_player: fatal
+    homeassistant.components.androidtv.media_player: fatal
+    homeassistant.components.media_player: fatal
+    homeassistant.components.camera: fatal
+    custom_components.xiaomi_cloud_map_extractor: fatal
+    DenonAVR: fatal
+    androidtv.adb_manager.adb_manager_async: fatal
+    homeassistant.config_entries: fatal
+    DenonSSDP: fatal
+    pychromecast.socket_client: fatal
+    homeconnect.sseclient: fatal
+  
+    
+
+
+
+# GUI 
+frontend:
+  themes: !include_dir_merge_named themes
+
+lovelace:
+  mode: yaml 
+  resources:
+  - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+    type: module  
+  - url: /hacsfiles/bar-card/bar-card.js    
+    type: module
+  - url: /hacsfiles/lovelace-xiaomi-vacuum-card/xiaomi-vacuum-card.js
+    type: module
+  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+    type: module  
+  - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+    type: module      
+                    
+
+# Zigbee 
+mqtt:
+  broker: core-mosquitto # This will have to be your mqtt broker, Mosquitto addon is recommended.
+  discovery: true
+
+input_boolean:
+  zigbee_permit_join:
+    name: Allow devices to join
+    initial: off
+    icon: mdi:cellphone-wireless
+
+  zimny_rezim:
+    name: Zimny Rezim
+    initial: on
+    
+  dovolenkovy_rezim:
+    name: Dovolenkovy Rezim
+    initial: off    
+    
+  zaluzie_otvorenie:
+    name: Zaluzie otvorenie
+    initial: off  
+    
+  zaluzie_horne_otvorenie:
+    name: Zaluzie horne otvorenie
+    initial: off    
+    
+
+
+        
+        
+
+timer:
+  zigbee_permit_join:
+    name: Time remaining
+    duration: 600 # Updated this to the number of seconds you wish
+
+  
+
+# Lights devices       
+light:
+
+# Chodba
+
+#  - platform: xiaomi_miio
+#    name: Chodba Bodovka 1
+#    host: 192.168.0.111
+#    token: !secret chodba_bodovka1_token
+#    model: philips.light.downlight   
+    
+#  - platform: xiaomi_miio
+#    name: Chodba Bodovka 2
+#    host: 192.168.0.112
+#    token: !secret chodba_bodovka2_token
+#    model: philips.light.downlight     
+
+#  - platform: xiaomi_miio
+#    name: Chodba Bodovka 3
+#    host: 192.168.0.113
+#    token: !secret chodba_bodovka3_token
+#    model: philips.light.downlight      
+
+# Vstupna Chodba    
+
+#  - platform: xiaomi_miio
+#    name: Vstupna Chodba Bodovka 1
+#    host: 192.168.0.114
+#    token: !secret vstupna_chodba_bodovka1_token
+#    model: philips.light.downlight    
+    
+#  - platform: xiaomi_miio
+#    name: Vstupna Chodba Bodovka 2
+#    host: 192.168.0.115
+#    token: !secret vstupna_chodba_bodovka2_token
+#    model: philips.light.downlight  
+    
+#  - platform: xiaomi_miio
+#    name: Vstupna Chodba Bodovka 3
+#    host: 192.168.0.116
+#    token: !secret vstupna_chodba_bodovka3_token
+#    model: philips.light.downlight 
+
+
+  - platform: switch
+    name: Postel Led Pasik
+    entity_id: switch.zasuvka_chodba            
+    
+# Vysavac
+
+#vacuum:
+#  - platform: xiaomi_miio
+#    host: 192.168.0.149
+#    token: !secret vysavac_tokken
+    
+
+# Satelit 
+media_player:
+  - platform: enigma2
+    host: 192.168.0.136
+    port: 80
+    use_channel_icon: true    
+    username: !secret sat_username
+    password: !secret sat_passwd
+
+# Nvidia Shield     
+  - platform: androidtv
+    name: NVIDIA Shield
+    host: 192.168.0.108   
+    
+    
+
+# Umyvacka Riadu
+home_connect:
+  client_id: !secret umyvacka_username
+  client_secret: !secret umyvacka_passwd 
+
+# Google Home
+google_assistant: !include google_assistant.yaml
+
+
+# TasmoAdmin
+panel_iframe:
+  tasmoadmin:
+    title: TasmoAdmin
+    icon: mdi:lightbulb-on
+    url: http://192.168.0.176:9541
+    
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    host: 192.168.0.149
+    token: !secret vysavac_tokken
+    username: !secret vysavac_username
+    password: !secret vysavac_passwd
+    country: "cn"
+    draw: ['all']
+    attributes:
+      - calibration_points      
+      
+# Bluetooth Senzory
+ble_monitor:
+     active_scan: True
+     discovery: True
+     decimals: 2
+     devices:
+      - mac: '7C:49:EB:B7:9B:96'
+      - mac: '7C:49:EB:B4:67:14'
+      - mac: '4C:65:A8:D0:B9:BE'
+##################################### Kanvica      
+      - mac: 'AC:9A:22:F2:96:D0'
+##################################### Ovladac      
+      - mac: 'F8:24:41:DD:3A:01'
+        encryption_key: 'edf6f1190f2b6352140322a1'    
+        name: 'Ovladac Spalna'
+      - mac: 'F8:24:41:DC:F7:6F'
+        encryption_key: '9e3bca1b48c0f686bac728c1'    
+        name: 'Ovladac Pracovna'
+      - mac: 'F8:24:41:DC:04:61'
+        encryption_key: 'd364dadebf96d91a840fae4d'    
+        name: 'Ovladac Obyvacka'        
+      
+      
+# Zapnutie Notebooku 
+wake_on_lan:
+    mac: '04:0E:3C:C9:FB:BB'
+    
+switch:
+  - platform: wake_on_lan
+    mac: '04:0E:3C:C9:FB:BB'
+    name: Notebook Firemny
+    
+
+       
+   
+      
+
+
+
+    
+  
+      
+    
+
+
+
+

@@ -1,0 +1,121 @@
+  project_id: smart-home-282119
+  service_account: !include Smart_Home-ed4f558b2000.json
+  report_state: true
+  expose_by_default: false
+  
+  entity_config:
+
+# ----------------------------------------Svetla    
+    light.obyvacka_hlavne_svetlo:
+        name: "Main Light"
+        room: "Living Room"
+        expose: true
+        
+    light.obyvacka_lampa:
+        name: "Lamp Light"
+        room: "Living Room"
+        expose: true    
+        
+    light.pracovna_hlavne_svetlo:
+        name: "Light"
+        room: "Office"
+        expose: true
+    
+    light.kuchyna_pasik:
+        name: "Light"
+        room: "Kitchen"
+        expose: true 
+        
+    group.chodba: 
+        name: "Light"
+        room: "Hall"
+        expose: true 
+   
+    group.vstupna_chodba:   
+        name: "Light"
+        room: "Entry Hall"
+        expose: true  
+        
+    light.spalna_hlavne_svetlo:
+        name: "Light"
+        room: "Bedroom"
+        expose: true
+    
+    switch.wc_svetlo:
+        name: "Light"
+        room: "Toilette"
+        expose: true  
+        
+    switch.kupelna_svetlo: 
+        name: "Light"
+        room: "Bathroom"
+        expose: true     
+        
+# ----------------------------------------Zasuvky 
+
+    switch.tv_zasuvka:
+        name: "TV"
+        room: "Living Room"
+        expose: true    
+        
+    switch.obyvacka_predlzovacka:
+        name: "Charger"
+        room: "Living Room"
+        expose: true 
+        
+    switch.pracovna:
+        name: "Playstation"
+        room: "Office"
+        expose: true  
+        
+# ----------------------------------------Klimatizacie
+
+    climate.room_air_conditioner:
+        name: "A/C"
+        room: "Living Room"
+        expose: true   
+        
+    climate.bedroom_a_c:  
+        name: "A/C"
+        room: "Bedroom"
+        expose: true  
+        
+# ----------------------------------------Ventilacka
+
+    switch.wc_ventilacka:
+        name: "Ventilation"
+        room: "Toilette"
+        expose: true  
+        
+    switch.kupelna_ventilacka:
+        name: "Ventilation"
+        room: "Bathroom"
+        expose: true   
+        
+# ---------------------------------------- Ine   
+
+    media_player.samsung_ue55f9000:
+        name: "Samsung"
+        room: "Living Room"
+        expose: true 
+        
+    media_player.denon_avr_x1600h:
+        name: "Denon"
+        room: "Living Room"
+        expose: true  
+        
+    media_player.enigma2_media_player:
+        name: "Satellite"
+        room: "Living Room"
+        expose: true     
+    
+    vacuum.xiaomi_vacuum_cleaner:
+        name: "Roborock"
+        room: "Living Room"
+        expose: true
+    
+    
+    
+        
+    
+    

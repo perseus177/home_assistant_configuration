@@ -1,0 +1,1200 @@
+title: Domov
+views:
+  - badges:
+      - entity: weather.home
+      - entity: person.lubos
+        name: Lubos
+      - entity: person.diana
+        name: Diana      
+      - entity: sun.sun
+
+    cards:
+      - entity: weather.home
+        type: weather-forecast
+
+ 
+        
+      - type: picture-entity
+        entity: camera.xiaomi_cloud_map_extractor 
+
+      - entities:
+          - entity: sensor.0x00158d00025e9bcf_temperature
+            name: Teplota
+        hours_to_show: 48
+        refresh_interval: 0
+        title: Vonku   Posledne 2 dni
+        type: history-graph
+        
+      - entities:
+          - entity: sensor.ble_temperature_4c65a8d0b9be
+            name: Obyvacka Teplota
+        hours_to_show: 48
+        refresh_interval: 0
+        title: Obyvacka   Posledne 2 dni
+        type: history-graph 
+
+       
+        
+      - entities:
+          - entity: sensor.ble_temperature_4c65a8dfc04a
+            name: Spalna Teplota
+        hours_to_show: 48
+        refresh_interval: 0
+        title: Spalna Posledne 2 dni
+        type: history-graph   
+
+      - entities:
+          - entity: sensor.radiator_obyvacka_pozicia
+            secondary_info: last-changed
+          - entity: sensor.radiator_spalna_pozicia
+            secondary_info: last-changed     
+          - entity: sensor.radiator_pracovna_pozicia
+            secondary_info: last-changed               
+        title: Radiator
+        type: entities     
+        
+      - entities:
+          - entity: sensor.0x00158d00025e9bcf_temperature   
+            name: Teplota Vonku
+        title: Zapnute zariadenia
+        type: 'custom:mini-graph-card' 
+        hour24: true
+        hours_to_show: 24 
+        show:
+            extrema: true
+            average: true
+            graph: true
+            
+               
+
+
+      - entities:
+          - entity: sensor.0x00158d00025e9bcf_temperature
+            type: 'custom:multiple-entity-row'
+            name: Vonku
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.0x00158d00025e9bcf_humidity
+                name: Vlhkost
+                
+               
+
+          - entity: sensor.ble_temperature_4c65a8d0b9be
+            type: 'custom:multiple-entity-row'
+            name: Obyvacka
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.ble_humidity_4c65a8d0b9be
+                name: Vlhkost
+
+          - entity: sensor.ble_temperature_4c65a8dfc04a
+            type: 'custom:multiple-entity-row'
+            name: Spalna
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.ble_humidity_4c65a8dfc04a
+                name: Vlhkost
+                
+          - entity: sensor.ble_temperature_4c65a8dfacaf
+            type: 'custom:multiple-entity-row'
+            name: Pracovna
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.ble_humidity_4c65a8dfacaf
+                name: Vlhkost                
+
+          - entity: sensor.0x00158d0002d4786c_temperature
+            type: 'custom:multiple-entity-row'
+            name: Kupelna
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.0x00158d0002d4786c_humidity
+                name: Vlhkost    
+
+        title: Teplotne Senzory
+        type: entities
+        
+      - type: entities
+        entities:
+          - entity: light.wled_2
+            name: Balkon Svetlo
+     
+        
+
+
+      - entities:
+          - entity: switch.tv_zasuvka
+          - entity: switch.stara_pracovna 
+            name: Balkon
+          - entity: light.obyvacka_hlavne_svetlo  
+          - entity: light.obyvacka_lampa
+          - entity: light.spalna_hlavne_svetlo 
+          - entity: light.postel_led_pasik_2           
+          - entity: light.pracovna_hlavne_svetlo 
+          # - entity: switch.pracovna
+          - entity: switch.kupelna_ventilacka 
+          - entity: switch.kupelna_svetlo 
+          - entity: switch.pracka_zasuvka  
+          - entity: switch.susicka_zasuvka  
+          - entity: light.kuchyna_pasik 
+          - entity: switch.wc_ventilacka
+          - entity: light.chodba_bodovka_1
+          - entity: light.chodba_bodovka_2
+          - entity: light.chodba_bodovka_3
+          - entity: light.vstupna_chodba_bodovka_1
+          - entity: light.vstupna_chodba_bodovka_2
+          - entity: light.vstupna_chodba_bodovka_3
+          - entity: light.wled
+            name: Pasik Stol      
+          - entity: light.wled_2  
+            name: Balkon Svetlo     
+          - entity: light.wled_3            
+            name: Pasik Parapeta   
+          - entity: binary_sensor.0x00158d00054d661a_contact 
+            name: Okno Spalna
+          - entity: binary_sensor.0x00158d00054dafc8_contact
+            name: Okno Obyvacka
+          - entity: binary_sensor.0x00124b002269eafa_contact 
+            name: Okno Kuchyna          
+          - entity: binary_sensor.0x00124b0022ed310a_contact
+            name: Balkon Kuchyna          
+          - entity: binary_sensor.0x00124b002266fd11_contact  
+            name: Dvere Obyvacka 
+          - entity: binary_sensor.0x00158d00069acede_contact  
+            name: Okno Pracovna  
+          - entity: binary_sensor.0x00158d00069b07d7_contact  
+            name: Balkon Spalna    
+          - entity: light.kuchyna_1 
+            name: Kuchyna Bodovka 1
+          - entity: light.kuchyna_2
+            name: Kuchyna Bodovka 2
+          - entity: light.kuchyna_3  
+            name: Kuchyna Bodovka 3
+          - entity: light.kuchyna_4 
+            name: Kuchyna Bodovka 4
+          - entity: light.kuchyna_5 
+            name: Kuchyna Bodovka 5      
+          - entity: light.wc 
+            name: WC Bodovka             
+
+            
+            
+            
+            
+  
+        state_filter:
+        - "on"
+        title: Zapnute zariadenia
+        type: entity-filter  
+        
+ 
+    path: default_view
+    title: Home
+###############################################Obyvacka
+  - badges: []
+    cards:
+
+      - type: media-control
+        name: Zosilovac
+        entity: media_player.denon_avr_x1600h
+          
+      - type: media-control
+        name: Satelit
+        entity: media_player.enigma2_media_player   
+        
+      - type: entities
+        entities:
+          - entity: light.obyvacka_hlavne_svetlo
+            name: Hlavne Svetlo
+          - entity: light.wled  
+            name: Stol
+          - entity: light.wled_3               
+            name: Pasik Parapeta      
+          - entity: light.obyvacka_hlavne_svetlo_ambilight
+            name: Hlavne Svetlo Ambilight            
+          - entity: light.obyvacka_lampa
+            name: Lampa
+
+        title: Svetla
+        show_header_toggle: true    
+        
+      - entities:
+          - entity: switch.tv_zasuvka
+            name: TV 
+            secondary_info: last-changed
+        title: Zasuvky
+        show_header_toggle: true
+        type: entities        
+
+      - type: custom:xiaomi-vacuum-card    
+        entity: vacuum.xiaomi_vacuum_cleaner
+        image: /local/img/vacuum.png
+        name: Robo
+        vendor: xiaomi
+
+          
+      - type: thermostat
+        name: Klimatizacia
+        entity: climate.room_air_conditioner   
+        
+
+      - type: media-control
+        name: Nvidia Shield
+        entity: media_player.nvidia_shield          
+        
+      - entities:
+          - entity: sensor.ble_temperature_4c65a8d0b9be
+            secondary_info: last-changed
+            name: Teplota
+          - entity: sensor.ble_humidity_4c65a8d0b9be
+            name: Vlhkost
+        title: Teplota
+        type: entities           
+        
+      - type: media-control
+        entity: media_player.samsung_ue55f9000         
+
+      - entities:
+          - entity: sensor.tv_zasuvka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.tv_zasuvka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.tv_dnesna_spotreba
+                name: Cena
+                
+          - entity: sensor.tv_zasuvka_energy_yesterday
+            type: 'custom:multiple-entity-row'
+            name:  Vcerajsia Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.tv_vcerajsia_spotreba
+                name: Cena    
+                
+          - entity: sensor.tv_zasuvka_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.tv_total_spotreba
+                name: Cena                 
+        title: TV Zasuvka
+        type: entities  
+        
+      - type: thermostat
+        name: Radiator
+        entity: climate.0x60a423fffea0fc8f  
+        
+      - entities:
+          - entity: binary_sensor.0x00158d00054dafc8_contact
+            secondary_info: last-changed
+            name: Poloha Okna
+        title: Okno
+        type: entities        
+        
+
+    path: obyvacka
+    title: Obyvacka
+###############################################Spalna
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.ble_temperature_4c65a8dfc04a
+            secondary_info: last-changed
+            name: Teplota
+          - entity: sensor.ble_humidity_4c65a8dfc04a
+            name: Vlhkost
+        title: Teplota
+        type: entities
+        
+      - type: light
+        entity: light.spalna_hlavne_svetlo     
+    
+      - type: thermostat
+        name: Klimatizacia Spalna
+        entity: climate.bedroom_a_c    
+        
+      - type: thermostat
+        name: Radiator
+        entity: climate.0xbc33acfffe37e579 
+        
+      - entities:
+          - entity: binary_sensor.0x00158d00054d661a_contact
+            secondary_info: last-changed
+            name: Poloha Okna
+          - entity: binary_sensor.0x00158d00069b07d7_contact
+            secondary_info: last-changed
+            name: Poloha Balkon            
+        title: Okno
+        type: entities 
+        
+      - type: light
+        entity: light.postel_led_pasik_2  
+        name: Postel
+        
+      - entities:
+          - entity: binary_sensor.0x00158d00045f3f8d_occupancy
+            secondary_info: last-changed
+            name: Pohyb
+          - entity: sensor.0x00158d00045f3f8d_illuminance
+            name: Lux
+          - entity: sensor.0x00158d00045f3f8d_linkquality   
+            name: Kvalita signalu
+        title: Pohyb
+        type: entities  
+        
+
+        
+      - entities:
+          - entity: switch.stara_pracovna
+            name: Balkon zo Spalne       
+          - entity: sensor.stara_pracovna_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.stara_pracovna_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.balkon_dnesna_spotreba
+                name: Cena
+                
+          - entity: sensor.stara_pracovna_energy_yesterday
+            type: 'custom:multiple-entity-row'
+            name:  Vcerajsia Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.balkon_vcerajsia_spotreba
+                name: Cena    
+                
+          - entity: sensor.stara_pracovna_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.balkon_total_spotreba 
+                name: Cena                 
+        title: Balkon 
+        type: entities          
+ 
+        
+
+
+    path: spalna
+    title: Spalna
+###############################################Pracovna
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.ble_temperature_4c65a8dfacaf
+            name: Teplota
+            secondary_info: last-changed
+          - entity: sensor.ble_humidity_4c65a8dfacaf
+            name: Vlhkost
+        title: Teplota
+        type: entities
+
+      - type: light
+        entity: light.pracovna_hlavne_svetlo  
+        
+      # - entities:
+          # - entity: switch.pracovna
+            # secondary_info: last-changed
+        # title: Zasuvka
+        # type: entities  
+
+      - entities:
+          - entity: sensor.pracovna_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.pracovna_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.pracovna_dnesna_spotreba
+                name: Cena
+                
+          - entity: sensor.pracovna_energy_yesterday
+            type: 'custom:multiple-entity-row'
+            name:  Vcerajsia Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.pracovna_vcerajsia_spotreba
+                name: Cena    
+                
+          - entity: sensor.pracovna_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.pracovna_total_spotreba
+                name: Cena                 
+        title: Pracovna
+        type: entities
+        
+      - entities:
+          - entity: binary_sensor.0x00158d00069acede_contact
+            secondary_info: last-changed
+            name: Poloha Okna
+        title: Okno
+        type: entities   
+
+      - type: thermostat
+        name: Radiator
+        entity: climate.0x60a423fffea3a842  
+        
+      - entities:
+          - entity:  cover.0x5c0272fffedfd8a2   
+            name: Ovladanie
+            secondary_info: last-changed
+          - entity: input_boolean.zaluzie_otvorenie
+            name: Dolne Otvorenie Zaluzie
+            secondary_info: last-changed 
+          - entity: input_boolean.zaluzie_horne_otvorenie
+            name: Horne Otvorenie Zaluzie
+            secondary_info: last-changed             
+          - entity: sensor.pozicia_zaluzie
+            name: Pozicia Zaluzie
+            secondary_info: last-changed            
+        title: Zaluzie
+        type: entities
+        show_header_toggle: false         
+        
+
+    
+        
+                  
+                 
+
+    path: pracovna
+    title: Pracovna        
+###############################################Kupelna
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.0x00158d0002d4786c_temperature
+            secondary_info: last-changed
+            name: Teplota
+          - entity: sensor.0x00158d0002d4786c_humidity
+            name: Vlhkost
+          - entity: sensor.0x00158d0002d4786c_linkquality
+            name: Kvalita signalu
+        title: Kupelna
+        type: entities
+        
+      - entities:
+          - entity: switch.kupelna_ventilacka
+            name: Ventilacka
+            secondary_info: last-changed
+          - entity: switch.kupelna_svetlo
+            name: Svetlo
+            secondary_info: last-changed
+          - entity: sensor.kupelna_status 
+            name: Kvalita signalu
+            secondary_info: last-changed            
+           
+        title: Kupelna Vypinac
+        type: entities     
+        show_header_toggle: true  
+        
+      - entities:
+        - entity: sensor.washing_machine_washer_machine_state
+          name: Zapnuta/Vypnuta  
+        - entity: sensor.washing_machine_washer_job_state
+          name: Praci Cyklus          
+        - entity: sensor.washing_machine_washer_completion_time
+          name: Dokoncenie programu 
+        - entity: sensor.pracka_zasuvka_energy_power
+          type: 'custom:multiple-entity-row'
+          name:  Aktualna Spotreba 
+          state_header: Spotreba
+          secondary_info: last-changed
+ 
+        - entity: sensor.pracka_zasuvka_energy_today
+          type: 'custom:multiple-entity-row'
+          name:  Dnesna Spotreba 
+          state_header: Spotreba
+          secondary_info: last-changed
+          entities:
+            - entity: sensor.pracka_dnesna_spotreba
+              name: Cena
+                
+        - entity: sensor.pracka_zasuvka_energy_total
+          type: 'custom:multiple-entity-row'
+          name:  Celkova Spotreba 
+          state_header: Spotreba
+          secondary_info: last-changed
+          entities:
+            - entity: sensor.pracka_total_spotreba
+              name: Cena              
+          
+        title: Pracka
+        type: entities          
+        
+      - entities:
+          - entity: switch.pracka_zasuvka
+            name: Pracka 
+            secondary_info: last-changed
+          - entity: switch.susicka_zasuvka
+            name: Susicka
+            secondary_info: last-changed            
+        title: Zasuvky
+        show_header_toggle: true
+        type: entities         
+        
+      - entities:
+          - entity: sensor.susicka_zasuvka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.susicka_zasuvka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.susicka_dnesna_spotreba
+                name: Cena
+                
+          - entity: sensor.susicka_zasuvka_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.susicka_total_spotreba
+                name: Cena                 
+        title: Susicka
+        type: entities         
+        
+
+    path: kupelna
+    title: Kupelna
+
+###############################################Kuchyna    
+  - badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: light.kuchyna_1
+            name: Bodovka 1
+          - entity: light.kuchyna_2
+            name: Bodovka 2
+          - entity: light.kuchyna_3
+            name: Bodovka 3
+          - entity: light.kuchyna_4
+            name: Bodovka 4
+          - entity: light.kuchyna_5
+            name: Bodovka 5            
+        title: Svetla
+        show_header_toggle: true      
+    
+    
+    
+      - entities:
+          - entity: binary_sensor.0x00158d0002e29c47_occupancy
+            secondary_info: last-changed
+            name: Pohyb                  
+          - entity: sensor.0x00158d0002e29c47_illuminance
+            name: Lux             
+          - entity: sensor.0x00158d0002e29c47_linkquality
+            name: Kvalita signalu          
+        title: Kuchyna
+        type: entities
+        
+      - type: light
+        entity: light.kuchyna_pasik
+
+      - entities:
+        - entity: binary_sensor.dishwasher_door
+          name: Dvierka 
+        - entity: sensor.dishwasher_program_progress
+          name: Stav programu
+        - entity: sensor.dishwasher_remaining_program_time
+          name: Dokoncenie programu
+        - type: divider   
+       
+        - entity: switch.dishwasher_power
+          name: Zapnutie/Vypnutie Umyvacky
+        - entity: switch.dishwasher_program_quick45
+          name: Rychly program 45C  
+        - entity: switch.dishwasher_program_auto2
+          name:  Auto program
+        - entity: switch.dishwasher_program_kurz60
+          name:  Program 60C 
+        - entity: switch.dishwasher_program_eco50
+          name:  Program ECO           
+        - entity: switch.dishwasher_program_intensiv70
+          name:  Program Hrnce           
+        - entity: switch.dishwasher_program_nightwash
+          name: Nocny program
+        - entity: switch.dishwasher_program_machinecare 
+          name: Cistenie Umyvacky  
+          
+
+        title: Umyvacka Riadu
+        show_header_toggle: false
+        type: entities
+        
+      - entities:
+          - entity: sensor.xiaomi_kettle_state
+            secondary_info: last-changed
+            name: Stav
+          - entity: sensor.ble_temperature_ac9a22f296d0
+            secondary_info: last-changed          
+            name: Teplota
+        title: Kanvica 
+        type: entities            
+
+      - entities:            
+          - entity: sensor.ble_temperature_ac9a22f296d0
+            name: Teplota
+        hours_to_show: 48
+        refresh_interval: 0
+        title: Kanvica 
+        type: history-graph  
+        
+      - entities:
+          - entity: binary_sensor.0x00124b002269eafa_contact
+            secondary_info: last-changed
+            name: Poloha Okna
+          - entity: binary_sensor.0x00124b0022ed310a_contact
+            secondary_info: last-changed
+            name: Poloha Balkonovych Dveri            
+        title: Okno
+        type: entities 
+        
+      
+        
+        
+  
+        
+
+    path: kuchyna
+    title: Kuchyna
+###############################################Vstupna Chodba    
+  - badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: light.vstupna_chodba_bodovka_1
+            name: Bodovka 1
+          - entity: light.vstupna_chodba_bodovka_2
+            name: Bodovka 2
+          - entity: light.vstupna_chodba_bodovka_3
+            name: Bodovka 3
+        title: Svetla
+        show_header_toggle: true
+        
+      - entities:
+          - entity: binary_sensor.0x00158d0002753dcc_occupancy
+            secondary_info: last-changed
+            name: Pohyb               
+          - entity: sensor.0x00158d0002753dcc_illuminance
+            name: Lux            
+          - entity: sensor.0x00158d0002753dcc_linkquality 
+            name: Kvalita signalu          
+        title: Pohyb
+        type: entities 
+        
+         
+        
+      
+
+    path: vstupna_chodba
+    title: Vstupna Chodba
+###############################################Chodba    
+  - badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: light.chodba_bodovka_1
+            name: Bodovka 1
+          - entity: light.chodba_bodovka_2
+            name: Bodovka 2
+          - entity: light.chodba_bodovka_3
+            name: Bodovka 3
+        title: Svetla
+        show_header_toggle: true
+        
+      - entities:
+          - entity: binary_sensor.0x00158d0004494467_occupancy
+            secondary_info: last-changed
+            name: Pohyb
+          - entity: sensor.0x00158d0004494467_illuminance
+            name: Lux
+          - entity: sensor.0x00158d0004494467_linkquality   
+            name: Kvalita signalu            
+        title: Pohyb
+        type: entities          
+        
+      - entities:
+          - entity: binary_sensor.0x00124b002266fd11_contact
+            secondary_info: last-changed
+            name: Dvere
+        title: Dvere
+        type: entities           
+        
+        
+
+    path: chodba
+    title: Chodba
+###############################################WC    
+  - badges: []
+    cards:
+      - entities:
+          - entity: switch.wc_svetlo
+            name: Svetlo
+            secondary_info: last-changed
+          - entity: switch.wc_ventilacka
+            name: Ventilacka
+            secondary_info: last-changed   
+          - entity: sensor.wc_status
+            name: Kvalita signalu
+            secondary_info: last-changed            
+            
+        title: WC Vypinac
+        type: entities     
+        show_header_toggle: true          
+
+    path: wc
+    title: WC    
+###############################################Administration         
+  - badges: []
+    cards:
+      - type: entities
+        title: System
+        show_header_toggle: false
+        entities:
+          - entity: sensor.installed_version
+            name: Hassio Installed Version
+            icon: mdi:home-assistant
+          - entity: sensor.latest_available_version
+            name: Hassio Current Version
+            icon: mdi:home-assistant 
+            
+          - type: divider 
+
+          - entity: sensor.last_boot_date_time
+            icon: mdi:calendar
+          - entity: sensor.rpi_uptime
+            secondary_info: last-changed
+            icon: mdi:clock-start
+          - entity: sensor.ha_uptime
+            secondary_info: last-changed
+            icon: mdi:home-assistant 
+          - entity: binary_sensor.rpi_power_status
+            secondary_info: last-changed
+         
+            
+            
+          - type: custom:bar-card
+            title: Processor Use
+            entity: sensor.processor_use_percent
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: green
+                from: 0
+                to: 60
+              - color: orange
+                from: 60
+                to: 85
+              - color: red
+                from: 85
+                to: 100  
+
+          - type: custom:bar-card
+            title: CPU Temp
+            entity: sensor.cpu_temp
+            animation: 'off'
+            indicator: 'off'
+            height: 20px
+            severity:
+              - color: green
+                from: 0
+                to: 60
+              - color: orange
+                from: 60
+                to: 85
+              - color: red
+                from: 85
+                to: 100  
+
+          - type: custom:bar-card
+            title: Memory Use
+            entity: sensor.memory_use_percent
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: green
+                from: 0
+                to: 60
+              - color: orange
+                from: 60
+                to: 85
+              - color: red
+                from: 85
+                to: 100                
+
+
+          - type: custom:bar-card
+            title: Disk Use %
+            entity: sensor.disk_use_percent
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: green
+                from: 0
+                to: 60
+              - color: orange
+                from: 60
+                to: 85
+              - color: red
+                from: 85
+                to: 100  
+
+          - type: custom:bar-card
+            title: Disk Use GB
+            entity: sensor.disk_use
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: green
+                from: 0
+                to: 60
+              - color: orange
+                from: 60
+                to: 85
+              - color: red
+                from: 85
+                to: 100                  
+                
+
+          - type: divider         
+          
+      - entities:
+          - entity: input_boolean.zigbee_permit_join
+          - entity: timer.zigbee_permit_join
+          - entity: sensor.bridge_state
+        show_header_toggle: false
+        title: Zigbee
+        type: entities
+        icon: mdi:zigbee  
+        
+      - entity: input_boolean.zimny_rezim
+        type: button
+        name: Zimny Rezim
+        icon: mdi:fire  
+
+      - entity: input_boolean.dovolenkovy_rezim
+        type: button
+        name: Dovolenkovy Rezim
+        icon: mdi:airplane  
+        
+      - entities:
+          - entity: input_number.radiator_spalna
+        title: Radiator Spalna Teplota (23°C)
+        type: entities
+        
+      - entities:
+          - entity: input_number.radiator_obyvacka
+        title: Radiator Obyvacka Teplota (23°C)
+        type: entities
+        
+
+      - entities:        
+        - type: weblink
+          name: Router
+          icon: mdi:router-wireless
+          url: http://192.168.0.1
+        - type: weblink
+          name: Satelit GUI
+          icon: mdi:satellite-variant
+          url: http://192.168.0.136
+        - type: weblink
+          name: Satelit GUI - Externe
+          icon: mdi:satellite-variant
+          url: !secret external_url_satelit
+        - type: weblink         
+          name: Synology
+          icon: mdi:database
+          url: http://192.168.0.157:5000   
+        - type: weblink
+          name: Synology - Externe
+          icon: mdi:database
+          url: https://quickconnect.to/         
+        - type: weblink
+          name: Zosilovac
+          icon: mdi:fast-forward
+          url: https://192.168.0.195:10443/  
+        - type: weblink          
+          name: Hyperion Ambilight
+          icon: mdi:alarm-light
+          url: http://192.168.0.120:8090/    
+        - type: weblink          
+          name: WLED Stol
+          icon: mdi:alarm-light
+          url: http://192.168.0.119/       
+        - type: weblink
+          name: WLED Parapeta
+          icon: mdi:alarm-light
+          url: http://192.168.0.166/         
+        - type: weblink            
+          name: WLED Balkon
+          icon: mdi:alarm-light
+          url: http://192.168.0.152/ 
+          
+          
+          
+          
+        title: Web-Interface
+        type: entities
+        
+      - entities:
+          - entity: sensor.data_volume_1_total_size
+            secondary_info: last-changed
+            name: Celkova Kapacita Uloziska
+          - entity: sensor.data_volume_1_used_space
+            secondary_info: last-changed          
+            name: Pouzita Kapacita Uloziska
+          - entity: switch.0x588e81fffedb88a1
+            name: Zasuvka
+            secondary_info: last-changed 
+          - entity: sensor.0x588e81fffedb88a1_power            
+            name:  Aktualna Spotreba
+            secondary_info: last-changed
+          - entity: sensor.0x588e81fffedb88a1_energy            
+            name:  Celkova Spotreba
+            secondary_info: last-changed
+
+        title: Synology
+        type: entities    
+        
+
+      - entities:
+          - entity: switch.router_zasuvka
+            secondary_info: last-changed
+            name: Zasuvka
+          - entity: sensor.router_zasuvka_rssi
+            secondary_info: last-changed          
+            name: Kvalita signalu
+     
+        title: Router
+        type: entities
+        
+
+      - entities:
+          - entity: switch.satelit_zasuvka
+            secondary_info: last-changed
+            name: Zasuvka
+          - entity: sensor.satelit_zasuvka_rssi
+            secondary_info: last-changed          
+            name: Kvalita signalu
+     
+        title: Satelit
+        type: entities        
+
+      - type: glance
+        title: Component Count
+        columns: 4
+        entities:
+          - entity: sensor.count_automations
+            name: Automations
+            icon: mdi:autorenew
+          - entity: sensor.count_scripts
+            name: Scripts
+            icon: mdi:script-text-outline
+          - entity: sensor.count_zones
+            name: Zones
+            icon: mdi:map-marker-radius
+          - entity: sensor.count_device_trackers
+            name: Device Trackers
+            icon: mdi:map-marker
+          - entity: sensor.count_switches
+            name: Switches
+            icon: mdi:light-switch
+          - entity: sensor.count_sensors
+            name: Sensors
+            icon: mdi:resistor
+          - entity: sensor.count_binary_sensors
+            name: Binary Sensors
+            icon: mdi:unfold-more-horizontal
+          - entity: sensor.count_input_booleans
+            name: Input Booleans
+            icon: mdi:toggle-switch
+          - entity: sensor.count_input_numbers
+            name: Input Numbers
+            icon: mdi:numeric
+          - entity: sensor.count_input_texts
+            name: Input Texts
+            icon: mdi:alphabetical
+          - entity: sensor.count_input_selects
+            name: Input Select
+            icon: mdi:view-list
+          - entity: sensor.count_lights
+            name: Svetla
+            icon: mdi:coach-lamp      
+
+      - type: entities
+        title: Internet            
+        entities:
+          - type: custom:bar-card
+            title: Download
+            entity: sensor.speedtest_download
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: red
+                from: 0
+                to: 30
+              - color: orange
+                from: 31
+                to: 69
+              - color: green
+                from: 70
+                to: 330       
+                
+          - type: custom:bar-card
+            title: Upload
+            entity: sensor.speedtest_upload
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: red
+                from: 0
+                to: 9
+              - color: orange
+                from: 10
+                to: 19
+              - color: green
+                from: 20
+                to: 100   
+                
+          - type: custom:bar-card
+            title: Ping
+            entity: sensor.speedtest_ping
+            height: 20px
+            animation: 'off'
+            indicator: 'off'
+            severity:
+              - color: red
+                from: 50
+                to: 200
+              - color: orange
+                from: 11
+                to: 49
+              - color: green
+                from: 1
+                to: 10 
+                
+      - type: custom:auto-entities
+        card:
+         title: Baterie
+         type: custom:bar-card
+         unit_of_measurement: "%"
+         height: 20px
+         animation: 'off'
+         indicator: 'off'         
+         severity:
+         - color: red         
+           from: 0
+           to: 35
+         - color: orange  
+           from: 36
+           to: 75
+         - color: green           
+           from: 76
+           to: 100
+        filter:
+          include: 
+          - entity_id: "*battery"
+          - entity_id: "*ble_battery*"          
+        sort:
+            method: state
+            reverse: false
+            numeric: true
+
+
+
+    path: administration
+    title: Administration  
+    
+###############################################Zastavky    
+  - badges: []
+    cards:
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=357
+        aspect_ratio: 100%
+        title: Sumracna
+        
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=20
+        aspect_ratio: 100%
+        title: Brodna 
+    
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=227
+        aspect_ratio: 100%
+        title: Nevadzova  
+
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=187
+        aspect_ratio: 100%
+        title: Markova 
+        
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=142
+        aspect_ratio: 100%
+        title: Kopcany   
+        
+      - type: iframe
+        url: https://imhd.sk/ba/online-zastavkova-tabula?st=153
+        aspect_ratio: 100%
+        title: Krizna         
+        
+          
+        
+        
+
+    path: zastavky
+    title: Zastavky    
+    
+  
+
+

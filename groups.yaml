@@ -1,0 +1,30 @@
+  vstupna_chodba:
+    name: Vstupna chodba
+    entities:
+      - light.vstupna_chodba_bodovka_1
+      - light.vstupna_chodba_bodovka_2
+      - light.vstupna_chodba_bodovka_3
+    
+  chodba:
+    name: Chodba
+    entities:
+      - light.chodba_bodovka_1
+      - light.chodba_bodovka_2
+      - light.chodba_bodovka_3  
+    
+  telefony: 
+    name: Telefony
+    entities:
+      - device_tracker.samsung_s21
+      - device_tracker.samsung_s20
+      
+  kuchyna:
+    name: Kuchyna
+    entities:
+      - light.kuchyna_1
+      - light.kuchyna_2
+      - light.kuchyna_3
+      - light.kuchyna_4
+      - light.kuchyna_5
+
+    
