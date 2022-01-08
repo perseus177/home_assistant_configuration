@@ -313,6 +313,10 @@
   - entity_id: sensor.0x00158d0002d4786c_humidity
     platform: numeric_state
     above: '80'
+  condition:
+  - condition: state
+    entity_id: switch.kupelna_ventilacka
+    state: 'off'    
   action:
   - service: switch.turn_on
     entity_id: switch.kupelna_ventilacka
@@ -342,6 +346,20 @@
       data: 
         ttl: 0
         priority: high
+        
+######## Svetlo
+- id: Kupelna Svetlo vypnutie po 60 min
+  alias: Kupelna Svetlo vypnutie po 60 min
+  mode: restart
+  trigger:
+  - platform: state  
+    entity_id: switch.kupelna_svetlo
+    to: 'on'
+    for:
+      minutes: 60
+  action:
+  - service: switch.turn_off  
+    entity_id: switch.kupelna_svetlo           
       
 
 
@@ -569,7 +587,7 @@
       
 #####################################################  Vypinac WC
 
-
+######## Ventilacka
 - id: WC Ventilacka vypnutie po 1. minute
   alias: WC Ventilacka vypnutie po 1. minute
   mode: restart
@@ -582,6 +600,22 @@
   - delay: 00:01:00 
   - service: switch.turn_off  
     entity_id: switch.wc_ventilacka
+
+######## Svetlo
+- id: WC Svetlo vypnutie po 30 min
+  alias: WC Svetlo vypnutie po 30 min
+  mode: restart
+  trigger:
+  - platform: state  
+    entity_id: switch.wc_svetlo
+    to: 'on'
+    for:
+      minutes: 30
+  action:
+  - service: switch.turn_off  
+    entity_id: switch.wc_svetlo    
+    
+
     
 
     
