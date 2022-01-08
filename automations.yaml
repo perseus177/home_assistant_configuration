@@ -367,15 +367,15 @@
       entity_id: light.obyvacka_lampa
     - service: light.turn_off
       entity_id: light.obyvacka_hlavne_svetlo
-    - service: switch.turn_on
-      entity_id: switch.router_zasuvka   #stromcek  
-    - service: light.turn_on
-      data:
-       entity_id: light.wled_3
-       effect: "Flow"
-       brightness: 50    #vianocna parapeta     
-    - service: switch.turn_on 
-      entity_id: switch.stara_pracovna       #vianocny balkon
+#    - service: switch.turn_on
+#      entity_id: switch.router_zasuvka   #stromcek  
+#    - service: light.turn_on
+#      data:
+#       entity_id: light.wled_3
+#       effect: "Flow"
+#       brightness: 50    #vianocna parapeta     
+#    - service: switch.turn_on 
+#      entity_id: switch.stara_pracovna       #vianocny balkon
     - service: notify.mobile_app_samsung_s21
       data: 
         message: "TV Mode Light automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"     
@@ -399,15 +399,15 @@
       entity_id: light.obyvacka_lampa
     - service: light.turn_off
       entity_id: light.obyvacka_hlavne_svetlo
-    - service: switch.turn_on
-      entity_id: switch.router_zasuvka     #stromcek  
-    - service: light.turn_on
-      data:
-       entity_id: light.wled_3
-       effect: "Flow"
-       brightness: 50    #vianocna parapeta     
-    - service: switch.turn_on 
-      entity_id: switch.stara_pracovna       #vianocny balkon       
+#    - service: switch.turn_on
+#      entity_id: switch.router_zasuvka     #stromcek  
+#    - service: light.turn_on
+#      data:
+#       entity_id: light.wled_3
+#       effect: "Flow"
+#       brightness: 50    #vianocna parapeta     
+#    - service: switch.turn_on 
+#      entity_id: switch.stara_pracovna       #vianocny balkon       
     - service: notify.mobile_app_samsung_s21
       data: 
         message: "TV Mode Light2 automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"     
@@ -1147,12 +1147,12 @@
     entity_id: 
     - light.obyvacka_lampa
     - light.obyvacka_hlavne_svetlo 
-  - service: switch.turn_off
-    entity_id: switch.router_zasuvka   #stromcek 
-  - service: light.turn_off
-    entity_id: light.wled_3    #vianocna parapeta 
-  - service: switch.turn_off
-    entity_id: switch.stara_pracovna       #vianocny balkon    
+#  - service: switch.turn_off
+#    entity_id: switch.router_zasuvka   #stromcek 
+#  - service: light.turn_off
+#    entity_id: light.wled_3    #vianocna parapeta 
+#  - service: switch.turn_off
+#    entity_id: switch.stara_pracovna       #vianocny balkon    
 #  - delay: 00:00:05     
 #  - service: switch.turn_off    
 #    entity_id: switch.obyvacka_predlzovacka   
