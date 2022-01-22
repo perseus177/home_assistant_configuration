@@ -897,16 +897,20 @@
   - entity_id: sensor.ble_temperature_4c65a8dfacaf
     platform: numeric_state
     below: '20'  
+  condition: 
+  - condition: state
+    entity_id: binary_sensor.0x00158d00069acede_contact
+    state: 'on'      
   action:
   - service: notify.mobile_app_samsung_s21
     data: 
-      message: "Chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "
+      message: "Chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfacaf', 'mean')}} °C. "
       data: 
         ttl: 0
         priority: high
   - service: notify.mobile_app_samsung_s20
     data: 
-      message: "Diana chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "        
+      message: "Diana chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfacaf', 'mean')}} °C. "        
       
       
 ############################### Cistenie databazy
