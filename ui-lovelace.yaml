@@ -53,6 +53,7 @@ views:
         title: Radiator
         type: entities     
         
+        
       - entities:
           - entity: sensor.0x00158d00025e9bcf_temperature   
             name: Teplota Vonku
@@ -191,6 +192,17 @@ views:
         - "on"
         title: Zapnute zariadenia
         type: entity-filter  
+        
+      - entities:
+          - entity: sensor.vysavac_state
+            name: Stav
+            secondary_info: last-changed
+          - entity: sensor.xiaomi_vacuum_cleaner_last_clean_duration
+            name: Dlzka vysavania
+            secondary_info: last-changed            
+              
+        title: Vysavac
+        type: entities         
         
  
     path: default_view

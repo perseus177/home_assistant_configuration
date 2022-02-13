@@ -379,6 +379,17 @@
      pozicia_zaluzie: 
       friendly_name: "Pozicia zaluzie"
       value_template:  "{{ ((state_attr('cover.0x5c0272fffedfd8a2', 'position'))) }}"
+      
+################################################ Vysavac
+
+     vysavac_state:
+      friendly_name: "Vysavac Dnesny stav vysavania"
+      value_template: >-
+        {% if now().strftime('%Y-%m-%d') ==  states('sensor.xiaomi_vacuum_cleaner_last_clean_start') | as_datetime | as_timestamp | timestamp_custom('%Y-%m-%d') %}
+          Vysavac dnes vysaval
+        {% else %}
+          Vysavac dnes nevysaval
+        {% endif %}    
 
     
         
