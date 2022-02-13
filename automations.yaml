@@ -1623,7 +1623,7 @@
   action:
   - service: notify.mobile_app_samsung_s21
     data: 
-      message: "Pohyb v byte o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
+      message: "Pohyb v byte {{ trigger.from_state.attributes.friendly_name }} o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
         ttl: 0
         priority: high     
@@ -1851,7 +1851,70 @@
       - switch.adaptive_lighting_sleep_mode_bodovky
       - switch.adaptive_lighting_sleep_mode_lampa_v_obyvacke 
       - switch.adaptive_lighting_sleep_mode_hlavne_svetla          
-      
+
+########################################## Vysavac 
+
+######################Notifikacie
+- id: Vysavac - Notifikacie - Hlavna Kefa 
+  alias: Vysavac - Notifikacie - Hlavna Kefa
+  mode: restart
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.xiaomi_vacuum_cleaner_main_brush_left
+    below: '1'
+  action:
+  - service: notify.mobile_app_samsung_s21
+    data: 
+      message: "Vysavac - vymen alebo vycisti hlavnu kefu {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
+      data: 
+        ttl: 0
+        priority: high   
+        
+
+- id: Vysavac - Notifikacie - Bocna Kefa 
+  alias: Vysavac - Notifikacie - Bocna Kefa
+  mode: restart
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.xiaomi_vacuum_cleaner_side_brush_left
+    below: '1'
+  action:
+  - service: notify.mobile_app_samsung_s21
+    data: 
+      message: "Vysavac - vymen alebo vycisti bocnu kefu {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
+      data: 
+        ttl: 0
+        priority: high           
+
+- id: Vysavac - Notifikacie - Filter 
+  alias: Vysavac - Notifikacie - Filter
+  mode: restart
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.xiaomi_vacuum_cleaner_filter_left
+    below: '1'
+  action:
+  - service: notify.mobile_app_samsung_s21
+    data: 
+      message: "Vysavac - vymen alebo vycisti filter {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
+      data: 
+        ttl: 0
+        priority: high   
+        
+- id: Vysavac - Notifikacie - Senzor 
+  alias: Vysavac - Notifikacie - Senzor
+  mode: restart
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.xiaomi_vacuum_cleaner_sensor_dirty_left
+    below: '1'
+  action:
+  - service: notify.mobile_app_samsung_s21
+    data: 
+      message: "Vysavac - vycisti senzory {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
+      data: 
+        ttl: 0
+        priority: high          
      
 
   

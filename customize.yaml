@@ -38,6 +38,15 @@ sensor.stara_pracovna_energy_total:
   friendly_name: Balkon
   device_class: energy
   state_class: total_increasing
+
+binary_sensor.0x00158d0004494467_occupancy:
+  friendly_name: Chodba
+
+binary_sensor.0x00158d0002753dcc_occupancy:
+  friendly_name: Vstupna Chodba
+
+binary_sensor.0x00158d0002e29c47_occupancy:
+  friendly_name: Kuchyna
   
 
 
