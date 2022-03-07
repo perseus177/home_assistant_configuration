@@ -359,18 +359,15 @@ views:
         name: Postel
         
       - entities:
-          - entity: binary_sensor.0x00158d00045f3f8d_occupancy
+          - entity: binary_sensor.ble_motion_senzor_pohybu_spalna
             secondary_info: last-changed
             name: Pohyb
-          - entity: sensor.0x00158d00045f3f8d_illuminance
-            name: Lux
-          - entity: sensor.0x00158d00045f3f8d_linkquality   
-            name: Kvalita signalu
+          - entity: binary_sensor.ble_light_senzor_pohybu_spalna
+            name: Svetlo
         title: Pohyb
-        type: entities  
+        type: entities        
         
 
-        
       - entities:
           - entity: switch.stara_pracovna
             name: Balkon zo Spalne       

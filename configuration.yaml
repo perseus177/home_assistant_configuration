@@ -250,8 +250,12 @@ ble_monitor:
         name: 'Ovladac Pracovna'
       - mac: 'F8:24:41:DC:04:61'
         encryption_key: 'd364dadebf96d91a840fae4d'    
-        name: 'Ovladac Obyvacka'        
-      
+        name: 'Ovladac Obyvacka'  
+##################################### Senzor Pohybu Spalna          
+      - mac: '54:EF:44:C1:13:5F'
+        encryption_key: 'ca8f0743a3cc7c3f69f63e8d54da5ef6'  
+        reset_timer: 25
+        name: 'Senzor Pohybu Spalna'        
       
 # Zapnutie Notebooku 
 wake_on_lan:
@@ -261,7 +265,7 @@ switch:
   - platform: wake_on_lan
     mac: '04:0E:3C:C9:FB:BB'
     name: Notebook Firemny
-    
+
 
        
    

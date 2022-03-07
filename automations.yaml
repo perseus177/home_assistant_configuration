@@ -495,7 +495,6 @@
         event: leave
         zone: zone.diana_praca
         entity_id: device_tracker.samsung_s20
-
   action:
     - service: notify.mobile_app_samsung_s21
       data: 
@@ -1095,14 +1094,16 @@
   alias: Comming Home
   mode: restart
   trigger:
-      - platform: zone
-        event: enter
-        zone: zone.home
+      - platform: state
         entity_id: device_tracker.samsung_s21
-      - platform: zone
-        event: enter
-        zone: zone.home
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"   
+      - platform: state
         entity_id: device_tracker.samsung_s20
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"         
   condition:
   - condition: time
     after: "09:00:00"
@@ -1113,7 +1114,7 @@
     - delay: 00:00:05    
     - service: vacuum.return_to_base
       entity_id: vacuum.xiaomi_vacuum_cleaner     
-    - delay: 00:03:00   
+    - delay: 00:02:00   
     - service: notify.mobile_app_samsung_s21
       data: 
         message: "Comming Home automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
@@ -1131,14 +1132,16 @@
   alias: Comming Home TV
   mode: restart
   trigger:
-      - platform: zone
-        event: enter
-        zone: zone.home
+      - platform: state
         entity_id: device_tracker.samsung_s21
-      - platform: zone
-        event: enter
-        zone: zone.home
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"    
+      - platform: state
         entity_id: device_tracker.samsung_s20
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"       
   condition:
     condition: or  
     conditions:    
@@ -1173,14 +1176,16 @@
   alias: Comming Home Svetlo
   mode: restart
   trigger:
-      - platform: zone
-        event: enter
-        zone: zone.home
+      - platform: state
         entity_id: device_tracker.samsung_s21
-      - platform: zone
-        event: enter
-        zone: zone.home
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"   
+      - platform: state
         entity_id: device_tracker.samsung_s20
+        from: 'not_home'
+        to: 'home'
+        for: "00:02:00"    
   condition:
   - condition: sun
     after: sunset
@@ -1239,11 +1244,11 @@
     
 ################################################################ Spalna postel
 
-- id: Spalna Postel
-  alias: Spalna Postel
+- id: Spalna Postel - Zapnutie
+  alias: Spalna Postel - Zapnutie
   trigger:
   - platform: state
-    entity_id: binary_sensor.0x00158d00045f3f8d_occupancy
+    entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna
     to: 'on'
   condition:
   - condition: state
@@ -1252,10 +1257,21 @@
   action:
   - service: light.turn_on   
     entity_id: light.postel_led_pasik_2   
-  - delay: 00:01:00 
-  - service: light.turn_off  
-    entity_id: light.postel_led_pasik_2    
-    
+
+- id: Spalna Postel - Vypnutie
+  alias: Spalna Postel - Vypnutie
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: 'below_horizon'
+  action:
+  - service: light.turn_off   
+    entity_id: light.postel_led_pasik_2   
+
 ################################################################ Spalna balkon
 
 - id: Spalna Balkon - otvorenie
