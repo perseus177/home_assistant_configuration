@@ -55,6 +55,26 @@ views:
         
         
       - entities:
+          - entity: sensor.elektromer_spotreba_total
+            secondary_info: last-changed
+            name: Elektromer Spotreba Total
+          - entity: sensor.elektromer_spotreba_kwh
+            secondary_info: last-changed   
+            name: Elektromer Spotreba Novy Uctovaci Cyklus            
+          - entity: sensor.elektromer_spotreba_cena
+            secondary_info: last-changed            
+            name: Cena    
+          - entity: sensor.0x0015bc001b02205d_energy
+            secondary_info: last-changed     
+            name: Spotreba
+          - entity: sensor.0x0015bc001b02205d_power
+            secondary_info: last-changed  
+            name: Aktualna spotreba 
+        title: Elektrina v byte
+        type: entities            
+        
+        
+      - entities:
           - entity: sensor.0x00158d00025e9bcf_temperature   
             name: Teplota Vonku
         title: Zapnute zariadenia
@@ -197,7 +217,7 @@ views:
           - entity: sensor.vysavac_state
             name: Stav
             secondary_info: last-changed
-          - entity: sensor.xiaomi_vacuum_cleaner_last_clean_duration
+          - entity: sensor.vysavac_dlzka_vysavania
             name: Dlzka vysavania
             secondary_info: last-changed            
               
@@ -1000,28 +1020,19 @@ views:
           - entity: sensor.data_volume_1_used_space
             secondary_info: last-changed          
             name: Pouzita Kapacita Uloziska
+        title: Synology
+        type: entities    
+        
+
+      - entities:
           - entity: switch.0x588e81fffedb88a1
             name: Zasuvka
-            secondary_info: last-changed 
           - entity: sensor.0x588e81fffedb88a1_power            
             name:  Aktualna Spotreba
             secondary_info: last-changed
           - entity: sensor.0x588e81fffedb88a1_energy            
             name:  Celkova Spotreba
             secondary_info: last-changed
-
-        title: Synology
-        type: entities    
-        
-
-      - entities:
-          - entity: switch.router_zasuvka
-            secondary_info: last-changed
-            name: Zasuvka
-          - entity: sensor.router_zasuvka_rssi
-            secondary_info: last-changed          
-            name: Kvalita signalu
-     
         title: Router
         type: entities
         

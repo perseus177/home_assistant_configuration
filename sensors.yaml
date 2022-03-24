@@ -335,7 +335,42 @@
      balkon_total_spotreba:
       friendly_name: "Balkon Total Spotreba"
       value_template: "{{ (( states('sensor.stara_pracovna_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      unit_of_measurement: '€'  
+      
+     elektromer_spotreba_start:
+      friendly_name: "Elektromer stav od zaciatku pocitania"
+      value_template: "2487"
+      unit_of_measurement: 'KWH' 
+
+     elektromer_spotreba_posledne_vyuctovanie:
+      friendly_name: "Elektromer stav vyuctovania"
+      value_template: "2114"
+      unit_of_measurement: 'KWH' 
+      
+     elektromer_spotreba_novy_cyklus:
+      friendly_name: "Elektromer novy cyklus"
+      value_template: "{{ ( states('sensor.elektromer_spotreba_start')|float ) - ( states('sensor.elektromer_spotreba_posledne_vyuctovanie')|float ) }}"
+      unit_of_measurement: 'KWH'  
+      
+     elektromer_spotreba_total:
+      friendly_name: "Elektromer total"
+      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float ) + ( states('sensor.elektromer_spotreba_start')|float ) }}"
+      unit_of_measurement: 'KWH' 
+
+     elektromer_spotreba_kwh:
+      friendly_name: "Elektromer spotreba v KWH v novom cykle"
+      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float ) + ( states('sensor.elektromer_spotreba_novy_cyklus')|float )  | round(2) }}"
+      unit_of_measurement: 'KWH'   
+      
+     elektromer_spotreba_cena:
+      friendly_name: "Elektromer spotreba v cene"
+      value_template: "{{ (( states('sensor.elektromer_spotreba_kwh')|float ) * 0.1811631497683994 ) | round(2) }}"
       unit_of_measurement: '€'            
+      
+  
+     
+
+        
       
 ################################################Teplomery
 
@@ -391,6 +426,10 @@
           Vysavac dnes nevysaval
         {% endif %}    
 
+     vysavac_dlzka_vysavania:
+      friendly_name: "Dlzka vysavania"
+      value_template: "{{ (( states('sensor.xiaomi_vacuum_cleaner_last_clean_duration')|float ) / 60 ) | round(2) }}"
+      unit_of_measurement: 'min' 
     
         
         
