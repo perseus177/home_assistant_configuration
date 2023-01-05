@@ -52,7 +52,13 @@ binary_sensor.0x00158d0002753dcc_occupancy:
   friendly_name: Vstupna Chodba
 
 binary_sensor.0x00158d0002e29c47_occupancy:
-  friendly_name: Kuchyna
+  friendly_name: Spalna Zigbee
+  
+binary_sensor.ble_motion_senzor_pohybu_spalna:
+  friendly_name: Spalna Bluetooth
+  
+binary_sensor.0x54ef4410005a9493_occupancy:
+  friendly_name: Kuchyna  
   
 
 

@@ -58,18 +58,27 @@ views:
           - entity: sensor.elektromer_spotreba_total
             secondary_info: last-changed
             name: Elektromer Spotreba Total
+          - entity: sensor.elektromer_spotreba_posledne_vyuctovanie
+            secondary_info: last-changed   
+            name: Elektromer Spotreba Posledne Vyuctovanie              
           - entity: sensor.elektromer_spotreba_kwh
             secondary_info: last-changed   
             name: Elektromer Spotreba Novy Uctovaci Cyklus            
           - entity: sensor.elektromer_spotreba_cena
             secondary_info: last-changed            
-            name: Cena    
+            name: Cena  
+          - entity: sensor.elektromer_spotreba_cena_mesacne
+            secondary_info: last-changed            
+            name: Cena za mesiac               
           - entity: sensor.0x0015bc001b02205d_energy
             secondary_info: last-changed     
             name: Spotreba
           - entity: sensor.0x0015bc001b02205d_power
             secondary_info: last-changed  
-            name: Aktualna spotreba 
+            name: Aktualna spotreba
+        
+            
+            
         title: Elektrina v byte
         type: entities            
         
@@ -381,9 +390,15 @@ views:
       - entities:
           - entity: binary_sensor.ble_motion_senzor_pohybu_spalna
             secondary_info: last-changed
-            name: Pohyb
+            name: Pohyb BLE
           - entity: binary_sensor.ble_light_senzor_pohybu_spalna
-            name: Svetlo
+            name: Svetlo BLE
+          - entity: binary_sensor.0x00158d0002e29c47_occupancy  
+            secondary_info: last-changed
+            name: Pohyb Zigbee
+          - entity: sensor.0x00158d0002e29c47_illuminance
+            name: Svetlo Zigbee  
+           
         title: Pohyb
         type: entities        
         
@@ -424,7 +439,14 @@ views:
               - entity: sensor.balkon_total_spotreba 
                 name: Cena                 
         title: Balkon 
-        type: entities          
+        type: entities   
+        
+      - entities:
+          - entity:  cover.0x54ef441000450603   
+            name: Ovladanie
+        title: Zaluzie
+        type: entities
+        show_header_toggle: false            
  
         
 
@@ -650,12 +672,12 @@ views:
     
     
       - entities:
-          - entity: binary_sensor.0x00158d0002e29c47_occupancy
+          - entity: binary_sensor.0x54ef4410005a9493_occupancy
             secondary_info: last-changed
             name: Pohyb                  
-          - entity: sensor.0x00158d0002e29c47_illuminance
+          - entity: sensor.0x54ef4410005a9493_illuminance
             name: Lux             
-          - entity: sensor.0x00158d0002e29c47_linkquality
+          - entity: sensor.0x54ef4410005a9493_linkquality
             name: Kvalita signalu          
         title: Kuchyna
         type: entities
@@ -1101,13 +1123,13 @@ views:
             severity:
               - color: red
                 from: 0
-                to: 30
+                to: 200
               - color: orange
-                from: 31
-                to: 69
+                from: 201
+                to: 399
               - color: green
-                from: 70
-                to: 330       
+                from: 400
+                to: 600       
                 
           - type: custom:bar-card
             title: Upload
@@ -1121,10 +1143,10 @@ views:
                 to: 9
               - color: orange
                 from: 10
-                to: 19
+                to: 49
               - color: green
-                from: 20
-                to: 100   
+                from: 50
+                to: 200   
                 
           - type: custom:bar-card
             title: Ping
@@ -1135,7 +1157,7 @@ views:
             severity:
               - color: red
                 from: 50
-                to: 200
+                to: 400
               - color: orange
                 from: 11
                 to: 49

@@ -37,13 +37,6 @@
     state_topic: "zigbee2mqtt/0x60a423fffea3a842"
     value_template: '{{ value_json.current_heating_setpoint }}'  
 
-########## Statisticky senzor vonku  
-  - platform: statistics
-    entity_id: sensor.0x00158d00025e9bcf_temperature
-    name: Vonku_Teplota_STAT
-    max_age:
-        hours: 24 
-    sampling_size: 200  
 
     
 
@@ -256,90 +249,94 @@
   - platform: template
     sensors:
 
+     cena_elektriny:
+      friendly_name: "Cena Elektriny"
+      value_template:  "0.1811631497683994"
+      unit_of_measurement: '€'
 
      tv_dnesna_spotreba:
       friendly_name: "TV Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.tv_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'
       
      tv_vcerajsia_spotreba:
       friendly_name: "TV Vcerajsia Spotreba"
-      value_template: "{{ (( states('sensor.tv_zasuvka_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_yesterday')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'    
       
      tv_total_spotreba:
       friendly_name: "TV Total Spotreba"
-      value_template: "{{ (( states('sensor.tv_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.tv_zasuvka_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'      
       
      obyvacka_predlzovacka_dnesna_spotreba:
       friendly_name: "Predlzovacka Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.obyvacka_predlzovackaa_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovackaa_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'
       
      obyvacka_predlzovacka_vcerajsia_spotreba:
       friendly_name: "Predlzovacka Vcerajsia Spotreba"
-      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_yesterday')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'    
       
      obyvacka_predlzovacka_total_spotreba:
       friendly_name: "Predlzovacka Total Spotreba"
-      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.obyvacka_predlzovacka_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'  
       
      pracovna_dnesna_spotreba:
       friendly_name: "Pracovna Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.pracovna_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.pracovna_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'
       
      pracovna_vcerajsia_spotreba:
       friendly_name: "Pracovna Vcerajsia Spotreba"
-      value_template: "{{ (( states('sensor.pracovna_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.pracovna_energy_yesterday')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'    
       
      pracovna_total_spotreba:
       friendly_name: "Pracovna Total Spotreba"
-      value_template: "{{ (( states('sensor.pracovna_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.pracovna_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'      
 
      pracka_dnesna_spotreba:
       friendly_name: "Pracka Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'      
       
      pracka_total_spotreba:
       friendly_name: "Pracka Total Spotreba"
-      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.pracka_zasuvka_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'  
       
      susicka_dnesna_spotreba:
       friendly_name: "Susicka Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'           
       
      susicka_total_spotreba:
       friendly_name: "Susicka Total Spotreba"
-      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.susicka_zasuvka_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'
       
      balkon_dnesna_spotreba:
       friendly_name: "Balkon Dnesna Spotreba"
-      value_template: "{{ (( states('sensor.stara_pracovna_energy_today')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_today')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'
       
      balkon_vcerajsia_spotreba:
       friendly_name: "Balkon Vcerajsia Spotreba"
-      value_template: "{{ (( states('sensor.stara_pracovna_energy_yesterday')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_yesterday')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'    
       
      balkon_total_spotreba:
       friendly_name: "Balkon Total Spotreba"
-      value_template: "{{ (( states('sensor.stara_pracovna_energy_total')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.stara_pracovna_energy_total')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
       unit_of_measurement: '€'  
       
      elektromer_spotreba_start:
       friendly_name: "Elektromer stav od zaciatku pocitania"
-      value_template: "2487"
+      value_template: "3503"
       unit_of_measurement: 'KWH' 
 
      elektromer_spotreba_posledne_vyuctovanie:
@@ -347,40 +344,36 @@
       value_template: "2114"
       unit_of_measurement: 'KWH' 
       
+
      elektromer_spotreba_novy_cyklus:
       friendly_name: "Elektromer novy cyklus"
-      value_template: "{{ ( states('sensor.elektromer_spotreba_start')|float ) - ( states('sensor.elektromer_spotreba_posledne_vyuctovanie')|float ) }}"
+      value_template: "{{ ( states('sensor.elektromer_spotreba_start')|float(0) ) - ( states('sensor.elektromer_spotreba_posledne_vyuctovanie')|float(0) ) }}"
       unit_of_measurement: 'KWH'  
       
      elektromer_spotreba_total:
       friendly_name: "Elektromer total"
-      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float ) + ( states('sensor.elektromer_spotreba_start')|float ) }}"
+      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float(0) ) + ( states('sensor.elektromer_spotreba_start')|float(0) ) }}"
       unit_of_measurement: 'KWH' 
 
      elektromer_spotreba_kwh:
       friendly_name: "Elektromer spotreba v KWH v novom cykle"
-      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float ) + ( states('sensor.elektromer_spotreba_novy_cyklus')|float )  | round(2) }}"
+      value_template: "{{ ( states('sensor.0x0015bc001b02205d_energy')|float(0) ) + ( states('sensor.elektromer_spotreba_novy_cyklus')|float(0) )  | round(2) }}"
       unit_of_measurement: 'KWH'   
       
      elektromer_spotreba_cena:
       friendly_name: "Elektromer spotreba v cene"
-      value_template: "{{ (( states('sensor.elektromer_spotreba_kwh')|float ) * 0.1811631497683994 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.elektromer_spotreba_kwh')|float(0) ) *  (states('sensor.cena_elektriny')|float(0))  ) | round(2) }}"
+      unit_of_measurement: '€'    
+      
+     elektromer_spotreba_cena_mesacne:
+      friendly_name: "Elektromer cena mesacne"
+      value_template: "{{ (( states('sensor.elektromer_spotreba_cena')|float(0) ) /12 ) | round(2) }}"
       unit_of_measurement: '€'            
       
   
      
 
         
-      
-################################################Teplomery
-
-     teplomer_spalna:
-      friendly_name: "Teplomer Spalna"
-      value_template: "{{ (( states('sensor.mi_t_4c65a8dfc04a')|int -2 ))}}"
-      
-     teplomer_obyvacka:
-      friendly_name: "Teplomer Obyvacka"
-      value_template: "{{ (( states('sensor.mi_t_4c65a8d0b9be')|int -2 ))}}"    
       
 
 ################################################ Xiaomi Kettle      
@@ -398,16 +391,6 @@
           Failed
         {% endif %}    
         
-################################################ Min Max temperature      
-
-    
-     teplota_vonku_max: 
-      friendly_name: "Teplota Vonku Max"
-      value_template:  "{{ ((state_attr('sensor.vonku_teplota_stat', 'max_value'))) }}"
-     
-     teplota_vonku_min:    
-      friendly_name: "Teplota Vonku Min"    
-      value_template:  "{{ ((state_attr('sensor.vonku_teplota_stat', 'min_value'))) }}"
 
 ################################################ Pozicia zaluzii 
 
@@ -428,7 +411,7 @@
 
      vysavac_dlzka_vysavania:
       friendly_name: "Dlzka vysavania"
-      value_template: "{{ (( states('sensor.xiaomi_vacuum_cleaner_last_clean_duration')|float ) / 60 ) | round(2) }}"
+      value_template: "{{ (( states('sensor.xiaomi_vacuum_cleaner_last_clean_duration')|float(0) ) / 60 ) | round(2) }}"
       unit_of_measurement: 'min' 
     
         

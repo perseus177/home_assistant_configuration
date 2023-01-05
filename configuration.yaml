@@ -68,6 +68,7 @@ logger:
     DenonSSDP: fatal
     pychromecast.socket_client: fatal
     homeconnect.sseclient: fatal
+    homeassistant.components.webhook: debug
   
     
 
