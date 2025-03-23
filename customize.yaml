@@ -39,8 +39,8 @@ sensor.pracovna_energy_total:
   device_class: energy
   state_class: total_increasing
 
-sensor.stara_pracovna_energy_total:
-  friendly_name: Balkon
+sensor.chladnicka_energy_total:
+  friendly_name: Chladnicka
   device_class: energy
   state_class: total_increasing
   

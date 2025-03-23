@@ -1,56 +1,15 @@
-#####################################################  Zigbee
-- id: enable_zigbee_join
-  alias: Enable Zigbee joining
-  trigger:
-    platform: state
-    entity_id: input_boolean.zigbee_permit_join
-    to: 'on'
-  action:
-  - service: mqtt.publish
-    data:
-      topic: zigbee2mqtt/bridge/config/permit_join
-      payload: 'true'
-  - service: timer.start
-    data:
-      entity_id: timer.zigbee_permit_join
 
-- id: disable_zigbee_join
-  alias: Disable Zigbee joining
-  trigger:
-  - entity_id: input_boolean.zigbee_permit_join
-    platform: state
-    to: 'off'
-  action:
-  - data:
-      payload: 'false'
-      topic: zigbee2mqtt/bridge/config/permit_join
-    service: mqtt.publish
-  - data:
-      entity_id: timer.zigbee_permit_join
-    service: timer.cancel
-
-- id: disable_zigbee_join_timer
-  alias: Disable Zigbee joining by timer
-  trigger:
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: timer.zigbee_permit_join
-  action:
-  - service: mqtt.publish
-    data:
-      topic: zigbee2mqtt/bridge/config/permit_join
-      payload: 'false'
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.zigbee_permit_join
 #####################################################  Led Pasik Kuchyna  
 - id: Kuchyna - Zapni led pasik pri pohybe a 90Lux - Noc
   alias: Kuchyna - Zapni led pasik pri pohybe a 90Lux - Noc
+  mode: restart  
   trigger:
   - platform: state
     entity_id: binary_sensor.0x54ef4410005a9493_occupancy
     to: 'on'
+  - platform: state
+    entity_id: binary_sensor.everything_presence_lite_07c65c_zone_1_occupancy  
+    to: 'on'    
   condition:
   - condition: numeric_state
     entity_id: sensor.0x54ef4410005a9493_illuminance
@@ -62,18 +21,24 @@
     entity_id: group.kuchyna
     state: 'off'    
   action:
-  - service: yeelight.set_color_scene
+  - service: light.turn_on
     data:
-        entity_id: light.kuchyna_pasik
-        rgb_color: [255,255,255]
-        brightness: '10'
+      entity_id: light.wled_3
+      effect: "Solid"
+      brightness: '10'
+      rgb_color: [255,255,255]        
+
         
 - id: Kuchyna - Zapni led pasik pri pohybe a 90Lux - Den
   alias: Kuchyna - Zapni led pasik pri pohybe a 90Lux - Den
+  mode: restart  
   trigger:
   - platform: state
     entity_id: binary_sensor.0x54ef4410005a9493_occupancy
     to: 'on'
+  - platform: state
+    entity_id: binary_sensor.everything_presence_lite_07c65c_zone_1_occupancy 
+    to: 'on'      
   condition:
   - condition: numeric_state
     entity_id: sensor.0x54ef4410005a9493_illuminance
@@ -85,33 +50,43 @@
     entity_id: group.kuchyna
     state: 'off'      
   action:
-  - service: yeelight.set_color_scene
+  - service: light.turn_on
     data:
-        entity_id: light.kuchyna_pasik
-        rgb_color: [255,255,255]
-        brightness: '100'        
+      entity_id: light.wled_3
+      effect: "Solid"
+      brightness: '250'
+      rgbw_color: [255,255,255,255]       
 
 - id: Kuchyna - Vypni led pasik bez pohybu
   alias: Kuchyna - Vypni led pasik bez pohybu
+  mode: restart  
   trigger:
-  - platform: state
-    entity_id: binary_sensor.0x54ef4410005a9493_occupancy
-    to: 'off'
-    for:
-      seconds: 6
+    - platform: state
+      entity_id: 
+        - binary_sensor.0x54ef4410005a9493_occupancy
+        - binary_sensor.everything_presence_lite_07c65c_zone_1_occupancy
+      to: 'off'
+      for:
+        seconds: 2  
+  condition:
+    - condition: state
+      entity_id: binary_sensor.0x54ef4410005a9493_occupancy
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.everything_presence_lite_07c65c_zone_1_occupancy
+      state: 'off'        
   action:
   - service: light.turn_off
-    entity_id: light.kuchyna_pasik
+    entity_id: light.wled_3
 #########################################################################  Vypinace 
 #####################################################  Vypinac Spalna   
 - id: Vypinac Spalna Prave tlacidlo
   alias: Vypinac Spalna Prave tlacidlo zapina/vypina svetlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d0002b45642
-  condition:
-    condition: template
-    value_template: '{{ ''right'' == trigger.payload_json.click }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002b45642/action
+      payload: "single_right"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
     entity_id: light.spalna_hlavne_svetlo
@@ -119,11 +94,10 @@
 - id: Vypinac Spalna Lave tlacidlo
   alias: Vypinac Spalna Lave tlacidlo zapina/vypina svetlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d0002b45642
-  condition:
-    condition: template
-    value_template: '{{ ''left'' == trigger.payload_json.click }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002b45642/action
+      payload: "single_left"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
     entity_id: light.postel_led_pasik_2
@@ -132,11 +106,10 @@
 - id: Vypinac Obyvacka Prave tlacidlo
   alias: Vypinac Obyvacka Prave tlacidlo zapina/vypina svetlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d0002afe6a9
-  condition:
-    condition: template
-    value_template: '{{ ''right'' == trigger.payload_json.click }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002afe6a9/action
+      payload: "single_right"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
     entity_id: light.obyvacka_hlavne_svetlo
@@ -144,45 +117,29 @@
 - id: Vypinac Obyvacka Lave tlacidlo
   alias: Vypinac Obyvacka Lave tlacidlo zapina/vypina svetlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d0002afe6a9
-  condition:
-    condition: template
-    value_template: '{{ ''left'' == trigger.payload_json.click }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002afe6a9/action
+      payload: "single_left"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
-    entity_id: 
-    - light.vstupna_chodba_bodovka_1
-    - light.vstupna_chodba_bodovka_2
-    - light.vstupna_chodba_bodovka_3   
+    entity_id: group.vstupna_chodba
+  
     
     
 #####################################################  Vypinac Pracovna  
 - id: Vypinac Pracovna Prave tlacidlo
   alias: Vypinac Pracovna Prave tlacidlo zapina/vypina svetlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d000650329f 
-  condition:
-    condition: template
-    value_template: '{{ ''right'' == trigger.payload_json.action }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d000650329f/action
+      payload: "single_right"
+      value_template: "{{ value }}"
   action:
-    service: homeassistant.toggle
-    entity_id: light.pracovna_hlavne_svetlo
+    - service: light.toggle
+      entity_id: light.pracovna_hlavne_svetlo
     
-# - id: Vypinac Pracovna Lave tlacidlo
-  # alias: Vypinac Pracovna Lave tlacidlo zapina/vypina svetlo
-  # trigger:
-  # - platform: mqtt
-    # topic: zigbee2mqtt/0x00158d000650329f 
-  # condition:
-    # condition: template
-    # value_template: '{{ ''left'' == trigger.payload_json.action }}'
-  # action:
-    # service: homeassistant.toggle
-    # entity_id: switch.pracovna
-     
-    
+
 
     
     
@@ -192,15 +149,19 @@
   alias: Chodba Svetlo 8:00 - 22:00
   mode: restart
   trigger:
-  - device_id: 16a0bb44063547848bdb9d695ff93fa5
-    domain: binary_sensor
-    entity_id: binary_sensor.0x00158d0004494467_occupancy   
-    platform: device
-    type: motion
+  - platform: state
+    entity_id: binary_sensor.0x00158d0004494467_occupancy  
+    to: 'on'
   condition:
   - condition: time
     after: "08:00:00"
     before: '22:00:00'
+  - condition: state
+    entity_id: 
+    - light.chodba_bodovka_1
+    - light.chodba_bodovka_2
+    - light.chodba_bodovka_3
+    state: 'off'     
   action:
   - data:
       scene: '1'
@@ -214,15 +175,19 @@
   alias: Chodba Svetlo 22:00 - 08:00
   mode: restart
   trigger:
-  - device_id: 16a0bb44063547848bdb9d695ff93fa5
-    domain: binary_sensor
-    entity_id: binary_sensor.0x00158d0004494467_occupancy
-    platform: device
-    type: motion
+  - platform: state
+    entity_id: binary_sensor.0x00158d0004494467_occupancy  
+    to: 'on'
   condition:
   - condition: time
     after: "22:00:02"
     before: '07:59:59'
+  - condition: state
+    entity_id: 
+    - light.chodba_bodovka_1
+    - light.chodba_bodovka_2
+    - light.chodba_bodovka_3
+    state: 'off'     
   action:
   - data:
       scene: '4'
@@ -240,6 +205,10 @@
     to: 'off'
     for:
       seconds: 21
+  condition:
+    - condition: state
+      entity_id: binary_sensor.0x00158d0004494467_occupancy
+      state: 'off'
   action:
   - service: light.turn_off
     entity_id: 
@@ -251,15 +220,22 @@
   alias: Vstupna Chodba Svetlo 8:00 - 22:00
   mode: restart
   trigger:
-  - device_id: 50c0132a39e7429b94ff69348bb0d911
-    domain: binary_sensor
+  - platform: state
     entity_id: binary_sensor.0x00158d0002753dcc_occupancy
-    platform: device
-    type: motion
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.everything_presence_lite_6acba0_zone_1_occupancy 
+    to: 'on'    
   condition:
   - condition: time
     after: "08:00:00"
     before: '22:00:00'
+  - condition: state
+    entity_id: 
+    - light.vstupna_chodba_bodovka_1
+    - light.vstupna_chodba_bodovka_2
+    - light.vstupna_chodba_bodovka_3
+    state: 'off'    
   action:
   - data:
       scene: '1'
@@ -269,19 +245,27 @@
     - light.vstupna_chodba_bodovka_3    
     service: xiaomi_miio.light_set_scene
 
+
 - id: Vstupna Chodba Svetlo 22:00 - 08:00
   alias: Vstupna Chodba Svetlo 22:00 - 08:00
   mode: restart
   trigger:
-  - device_id: 50c0132a39e7429b94ff69348bb0d911
-    domain: binary_sensor
+  - platform: state
     entity_id: binary_sensor.0x00158d0002753dcc_occupancy
-    platform: device
-    type: motion
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.everything_presence_lite_6acba0_zone_1_occupancy 
+    to: 'on'     
   condition:
   - condition: time
     after: "22:00:02"
     before: '07:59:59'
+  - condition: state
+    entity_id: 
+    - light.vstupna_chodba_bodovka_1
+    - light.vstupna_chodba_bodovka_2
+    - light.vstupna_chodba_bodovka_3
+    state: 'off'     
   action:
   - data:
       scene: '4'
@@ -291,20 +275,37 @@
     - light.vstupna_chodba_bodovka_3    
     service: xiaomi_miio.light_set_scene    
 
+
+
 - id: Vstupna Chodba vypnutie svetla
   alias: Vstupna Chodba vypnutie svetla
+  mode: restart
   trigger:
-  - platform: state
-    entity_id: binary_sensor.0x00158d0002753dcc_occupancy
-    to: 'off'
-    for:
-      seconds: 21
+    - platform: state
+      entity_id: 
+        - binary_sensor.0x00158d0002753dcc_occupancy
+        - binary_sensor.everything_presence_lite_6acba0_zone_1_occupancy
+      to: 'off'
+      for:
+        seconds: 2
+  condition:
+    - condition: state
+      entity_id: binary_sensor.0x00158d0002753dcc_occupancy
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.everything_presence_lite_6acba0_zone_1_occupancy
+      state: 'off'
   action:
-  - service: light.turn_off
-    entity_id: 
-    - light.vstupna_chodba_bodovka_1
-    - light.vstupna_chodba_bodovka_2
-    - light.vstupna_chodba_bodovka_3    
+    - service: light.turn_off
+      entity_id: 
+          - light.vstupna_chodba_bodovka_1
+          - light.vstupna_chodba_bodovka_2
+          - light.vstupna_chodba_bodovka_3
+
+
+
+
+   
     
 #####################################################  Kupelna
 - id: Kupelna Odsavanie Vlhkosti nad 80 percent
@@ -320,7 +321,7 @@
   action:
   - service: switch.turn_on
     entity_id: switch.kupelna_ventilacka
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Odsavanie sa zaplo o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna vlhkost je {{state_attr('sensor.0x00158d0002d4786c_humidity', 'humidity')}} %. "
       data: 
@@ -340,7 +341,7 @@
   action:
   - service: switch.turn_off    
     entity_id: switch.kupelna_ventilacka
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Odsavanie sa vyplo o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}. Aktualna vlhkost je {{state_attr('sensor.0x00158d0002d4786c_humidity', 'humidity')}} %. "
       data: 
@@ -372,11 +373,9 @@
         event: 'sunset'
         offset: '-00:30:00'
   condition:
-  - condition: device
-    device_id: 1cb152c0e364422bb003be4ab140daa6
-    domain: media_player
-    entity_id: media_player.samsung_ue55f9000
-    type: is_on
+  - condition: state
+    entity_id: media_player.samsung
+    state: 'on'
   action:
 #    - service: switch.turn_on
 #      entity_id: switch.obyvacka_predlzovacka
@@ -385,16 +384,16 @@
       entity_id: light.obyvacka_lampa
     - service: light.turn_off
       entity_id: light.obyvacka_hlavne_svetlo
-    - service: switch.turn_on
-      entity_id: switch.router_zasuvka   #stromcek  
-    - service: light.turn_on
-      data:
-       entity_id: light.wled_3
-       effect: "Flow"
-       brightness: 50    #vianocna parapeta     
+#    - service: switch.turn_on
+#      entity_id: switch.router_zasuvka   #stromcek  
+#    - service: light.turn_on
+#      data:
+#       entity_id: light.wled_3
+#       effect: "Flow"
+#       brightness: 50    #vianocna parapeta     
 #    - service: switch.turn_on 
 #      entity_id: switch.stara_pracovna       #vianocny balkon
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "TV Mode Light automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"     
         data: 
@@ -406,7 +405,7 @@
   mode: restart
   trigger:
       - platform: state
-        entity_id: media_player.samsung_ue55f9000
+        entity_id: media_player.samsung
         to: 'on'  
   condition:        
   - condition: sun
@@ -417,16 +416,16 @@
       entity_id: light.obyvacka_lampa
     - service: light.turn_off
       entity_id: light.obyvacka_hlavne_svetlo
-    - service: switch.turn_on
-      entity_id: switch.router_zasuvka     #stromcek  
-    - service: light.turn_on
-      data:
-       entity_id: light.wled_3
-       effect: "Flow"
-       brightness: 50    #vianocna parapeta     
+#    - service: switch.turn_on
+#      entity_id: switch.router_zasuvka     #stromcek  
+#    - service: light.turn_on
+#      data:
+#       entity_id: light.wled_3
+#       effect: "Flow"
+#       brightness: 50    #vianocna parapeta     
 #    - service: switch.turn_on 
 #      entity_id: switch.stara_pracovna       #vianocny balkon       
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "TV Mode Light2 automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"     
         data: 
@@ -443,11 +442,9 @@
   - at: "00:01:00"
     platform: time
   condition:
-  - condition: device
-    device_id: 1cb152c0e364422bb003be4ab140daa6
-    domain: media_player
-    entity_id: media_player.samsung_ue55f9000
-    type: is_off    
+  - condition: state
+    entity_id: media_player.samsung
+    state: 'off'  
   action:
     - service: switch.turn_off
       entity_id: switch.tv_zasuvka
@@ -479,7 +476,6 @@
         to: 'idle'
       - platform: state
         entity_id: media_player.nvidia_shield
-        from: 'off'   
         to: 'playing'    
   action:
     - service: media_player.turn_off
@@ -494,9 +490,9 @@
       - platform: zone
         event: leave
         zone: zone.diana_praca
-        entity_id: device_tracker.samsung_s20
+        entity_id: device_tracker.samsung_s23
   action:
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Diana odisla z prace o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}" 
         data: 
@@ -519,7 +515,7 @@
   action:
   - service: switch.turn_off    
     entity_id: switch.obyvacka_predlzovacka
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Predlzovacka sa vypla {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
@@ -542,7 +538,7 @@
   # - delay: 00:02:00     
   # - service: switch.turn_off    
     # entity_id: switch.pracovna
-  # - service: notify.mobile_app_samsung_s21
+  # - service: notify.mobile_app_samsung_s25
     # data: 
       # message: "Zasuvka v pracovni sa vypla {{ now().strftime('%H:%M:%S %A %d %B %Y') }}" 
       # data: 
@@ -551,7 +547,7 @@
       
 - id: TV zasuvka Vypnutie pod 25W
   alias: TV zasuvka Vypnutie pod 25W
-  mode: restart
+  mode: queued
   trigger:
   - entity_id: sensor.tv_zasuvka_energy_power
     platform: numeric_state
@@ -561,10 +557,18 @@
     entity_id: switch.tv_zasuvka
     state: 'on'   
   action:
-  - delay: 00:02:00     
+  - delay: "00:02:00"
+  - condition: and
+    conditions:
+      - condition: numeric_state  
+        entity_id: sensor.tv_zasuvka_energy_power
+        below: '40'
+      - condition: state  
+        entity_id: switch.tv_zasuvka
+        state: 'on'     
   - service: switch.turn_off  
     entity_id: switch.tv_zasuvka 
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "TV sa vypla {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"  
       data: 
@@ -581,8 +585,7 @@
   action:
     - service: switch.turn_off
       entity_id: 
-      - switch.pracka_zasuvka
-      - switch.susicka_zasuvka
+      - switch.susicka_zasuvka_2
       
       
 #####################################################  Vypinac WC
@@ -607,13 +610,13 @@
   mode: restart
   trigger:
   - platform: state  
-    entity_id: switch.wc_svetlo
+    entity_id: light.wc_svetlo
     to: 'on'
     for:
       minutes: 30
   action:
-  - service: switch.turn_off  
-    entity_id: switch.wc_svetlo    
+  - service: light.turn_off  
+    entity_id: light.wc_svetlo    
     
 
     
@@ -630,7 +633,7 @@
   - condition: and
     conditions:
       - condition: time
-        after: "22:00:00"
+        after: "19:00:00"
         before: "08:00:00"  
 #### Podmienka ze teplota na teplomery je mensia ako teplota pre radiator nastavena na Administration pre spalnu         
       - condition: template
@@ -647,17 +650,17 @@
       - condition: or
         conditions:    
           - condition: state
-            entity_id: device_tracker.samsung_s21
+            entity_id: device_tracker.samsung_s25
             state: 'home'       
           - condition: state
-            entity_id: device_tracker.samsung_s20
+            entity_id: device_tracker.samsung_s23
             state: 'home' 
   action:
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/0xbc33acfffe37e579/set
       payload: '{"current_heating_setpoint":"{{ states.input_number.radiator_spalna.state | float(0)|round(1) }}"}'
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Spalna - Kurenie sa zaplo {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "   
       data: 
@@ -674,7 +677,7 @@
   - condition: and
     conditions:
       - condition: time
-        after: "22:00:00"
+        after: "19:00:00"
         before: "08:00:00" 
 ### Opacne ako v predchazajucej automatizacii 
       - condition: template
@@ -708,6 +711,7 @@
         entity_id: binary_sensor.0x00158d00054d661a_contact
         from: "off"
         to: 'on'
+        for: "00:02:00"
   action:
   - service: mqtt.publish
     data:
@@ -727,11 +731,9 @@
   condition:
   - condition: and
     conditions:
-      - condition: device
-        device_id: 1cb152c0e364422bb003be4ab140daa6
-        domain: media_player
-        entity_id: media_player.samsung_ue55f9000
-        type: is_on 
+      - condition: state
+        entity_id: media_player.samsung
+        state: 'on'
 #### Podmienka ze teplota na teplomery je mensia ako teplota pre radiator nastavena na Administration pre obyvacku         
       - condition: template
         value_template: "{{ states('sensor.ble_temperature_4c65a8d0b9be')| float(0)|round(1) < states('input_number.radiator_obyvacka')| float(0)|round(1) }}"
@@ -755,7 +757,7 @@
     data:
       topic: zigbee2mqtt/0x60a423fffea0fc8f/set
       payload: '{"current_heating_setpoint":"{{ states.input_number.radiator_obyvacka.state | float(0)|round(1) }}"}'      
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Obyvacka - Kurenie sa zaplo {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8d0b9be', 'mean')}} °C. "   
       data: 
@@ -780,7 +782,7 @@
     data:
       topic: zigbee2mqtt/0x60a423fffea0fc8f/set
       payload: '{"current_heating_setpoint":"5.0"}'
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Obyvacka - Kurenie sa vyplo {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8d0b9be', 'mean')}} °C. "  
       data: 
@@ -795,14 +797,17 @@
         entity_id: binary_sensor.0x00158d00054dafc8_contact
         from: "off"
         to: 'on'
+        for: "00:02:00"
       - platform: state
         entity_id: binary_sensor.0x00124b002269eafa_contact
         from: "off"
         to: 'on'
+        for: "00:02:00"
       - platform: state
         entity_id: binary_sensor.0x00124b0022ed310a_contact
         from: "off"
         to: 'on' 
+        for: "00:02:00"
   action:
   - service: mqtt.publish
     data:
@@ -818,11 +823,9 @@
   condition:
   - condition: and
     conditions:
-      - condition: device
-        device_id: 1cb152c0e364422bb003be4ab140daa6
-        domain: media_player
-        entity_id: media_player.samsung_ue55f9000
-        type: is_on 
+      - condition: state
+        entity_id: media_player.samsung
+        state: 'on'
       - condition: template
         value_template: "{{ states('sensor.ble_temperature_4c65a8d0b9be')| float(0)|round(1) < states('input_number.radiator_obyvacka')| float(0)|round(1) }}" 
       - condition: template
@@ -840,13 +843,13 @@
         entity_id: binary_sensor.0x00124b002266fd11_contact
         state: 'on'   
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Obyvacka - Ak chces aby sa kurenie zaplo chod zavriet dvere na chodbu.  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8d0b9be', 'mean')}} °C.  Cas {{ now().strftime('%H:%M:%S %A %d %B %Y') }} "   
       data: 
         ttl: 0
         priority: high   
-  - service: notify.mobile_app_samsung_s20
+  - service: notify.mobile_app_samsung_s23
     data: 
       message: "Obyvacka - Ak chces aby sa kurenie zaplo chod zavriet dvere na chodbu. Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8d0b9be', 'mean')}} °C.  Cas {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  "   
       data: 
@@ -881,13 +884,13 @@
     entity_id: binary_sensor.0x00158d00054d661a_contact
     state: 'on'    
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Chod zavriet okno do spalne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "
       data: 
         ttl: 0
         priority: high
-  - service: notify.mobile_app_samsung_s20
+  - service: notify.mobile_app_samsung_s23
     data: 
       message: "Diana chod zavriet okno do spalne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "      
       
@@ -902,13 +905,13 @@
     entity_id: binary_sensor.0x00158d00069acede_contact
     state: 'on'      
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfacaf', 'mean')}} °C. "
       data: 
         ttl: 0
         priority: high
-  - service: notify.mobile_app_samsung_s20
+  - service: notify.mobile_app_samsung_s23
     data: 
       message: "Diana chod zavriet okno do pracovne {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfacaf', 'mean')}} °C. "        
       
@@ -942,16 +945,17 @@
     entity_id: binary_sensor.ble_switch_ac9a22f296d0
     state: 'on'       
   action:
-  - service: yeelight.set_color_scene
+  - service: light.turn_on
     data:
-        entity_id: light.kuchyna_pasik
-        rgb_color: [255,0,0]
-        brightness: '100'
+      entity_id: light.wled_3
+      effect: "Solid"
+      brightness: '250'
+      rgb_color: [255,0,0]          
   - service: light.turn_on
     data:
       entity_id: light.wled
       effect: "Android"
-      brightness: 100
+      brightness: '100'
       rgb_color: [255,0,0]
   - service: tts.google_translate_say
     entity_id: media_player.living_room_speaker
@@ -963,7 +967,7 @@
     entity_id: light.wled          
   - delay: 00:00:45      
   - service: light.turn_off
-    entity_id: light.kuchyna_pasik
+    entity_id: light.wled_3
  
         
 - id: Kanvica napoj je pripraveny
@@ -1008,7 +1012,7 @@
       entity_id: light.spalna_hlavne_svetlo
     - delay: 00:00:02
     - service: light.turn_off
-      entity_id: light.kuchyna_pasik  
+      entity_id: light.wled_3
     - delay: 00:00:02
     - service: light.turn_off
       entity_id: light.pracovna_hlavne_svetlo  
@@ -1032,7 +1036,7 @@
       entity_id: switch.kupelna_ventilacka
     - delay: 00:00:02
     - service: switch.turn_off
-      entity_id: switch.wc_svetlo
+      entity_id: light.wc_svetlo
     - delay: 00:00:02
     - service: switch.turn_off
       entity_id: switch.wc_ventilacka
@@ -1054,7 +1058,7 @@
       data:
           topic: zigbee2mqtt/0x60a423fffea3a842/set
           payload: '{"current_heating_setpoint":"19.0"}'           
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Leaving Home automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
         data: 
@@ -1077,12 +1081,26 @@
   action:  
     - service: vacuum.start
       entity_id: vacuum.xiaomi_vacuum_cleaner
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Vysavac sa zapol o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"  
         data: 
           ttl: 0
-          priority: high        
+          priority: high      
+          
+- id: Vysavac - pravidelne vysavanie
+  alias: Vysavac - pravidelne vysavanie
+  trigger:
+  - at: "14:00:00"
+    platform: time  
+  condition:
+  - condition: state
+    entity_id: group.telefony
+    state: 'not_home'          
+  action:  
+    - service: vacuum.start
+      entity_id: vacuum.xiaomi_vacuum_cleaner
+
 
         
 
@@ -1095,12 +1113,12 @@
   mode: single
   trigger:
       - platform: state
-        entity_id: device_tracker.samsung_s21
+        entity_id: device_tracker.samsung_s25
         from: 'not_home'
         to: 'home'
         for: "00:02:00"   
       - platform: state
-        entity_id: device_tracker.samsung_s20
+        entity_id: device_tracker.samsung_s23
         from: 'not_home'
         to: 'home'
         for: "00:02:00"         
@@ -1115,7 +1133,7 @@
     - service: vacuum.return_to_base
       entity_id: vacuum.xiaomi_vacuum_cleaner     
     - delay: 00:02:00   
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Comming Home automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
         data: 
@@ -1133,12 +1151,12 @@
   mode: single
   trigger:
       - platform: state
-        entity_id: device_tracker.samsung_s21
+        entity_id: device_tracker.samsung_s25
         from: 'not_home'
         to: 'home'
         for: "00:02:00"    
       - platform: state
-        entity_id: device_tracker.samsung_s20
+        entity_id: device_tracker.samsung_s23
         from: 'not_home'
         to: 'home'
         for: "00:02:00"       
@@ -1163,7 +1181,7 @@
   action:
     - service: switch.turn_on
       entity_id: switch.tv_zasuvka       
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Comming Home TV automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
         data: 
@@ -1177,12 +1195,12 @@
   mode: single
   trigger:
       - platform: state
-        entity_id: device_tracker.samsung_s21
+        entity_id: device_tracker.samsung_s25
         from: 'not_home'
         to: 'home'
         for: "00:02:00"   
       - platform: state
-        entity_id: device_tracker.samsung_s20
+        entity_id: device_tracker.samsung_s23
         from: 'not_home'
         to: 'home'
         for: "00:02:00"    
@@ -1201,7 +1219,7 @@
 #    - delay: 00:01:00  
     - service: light.turn_on
       entity_id: light.obyvacka_lampa
-    - service: notify.mobile_app_samsung_s21
+    - service: notify.mobile_app_samsung_s25
       data: 
         message: "Comming Home Svetlo automatizacia spustena o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"      
         data: 
@@ -1216,7 +1234,7 @@
   mode: restart
   trigger:
       - platform: state
-        entity_id: media_player.samsung_ue55f9000
+        entity_id: media_player.samsung
         to: 'off' 
   condition:
   - condition: time
@@ -1237,12 +1255,12 @@
     entity_id: 
     - light.obyvacka_lampa
     - light.obyvacka_hlavne_svetlo 
-  - service: switch.turn_off
-    entity_id: switch.router_zasuvka   #stromcek 
-  - service: light.turn_off
-    entity_id: light.wled_3    #vianocna parapeta 
 #  - service: switch.turn_off
-#    entity_id: switch.stara_pracovna       #vianocny balkon    
+#    entity_id: switch.router_zasuvka   #stromcek 
+#  - service: light.turn_off
+#    entity_id: light.wled_3    #vianocna parapeta 
+#  - service: switch.turn_off
+#    entity_id: switch.stara_pracovna  treba kupit novu zasuvku tato je na balkone      #vianocny balkon    
 #  - delay: 00:00:05     
 #  - service: switch.turn_off    
 #    entity_id: switch.obyvacka_predlzovacka   
@@ -1259,9 +1277,22 @@
     entity_id: binary_sensor.0x00158d0002e29c47_occupancy
     to: 'on'    
   condition:
-  - condition: state
-    entity_id: sun.sun
-    state: 'below_horizon'
+    - condition: state
+      entity_id: sun.sun
+      state: 'below_horizon'
+    - condition: state
+      entity_id:
+      - light.postel_led_pasik_2
+      - light.spalna_hlavne_svetlo      
+      state: 'off'
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.0x00158d0002e29c47_occupancy
+          state: 'on'     
   action:
   - service: light.turn_on   
     entity_id: light.postel_led_pasik_2   
@@ -1272,13 +1303,25 @@
   - platform: state
     entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna
     to: 'off'
-  condition:
-  - condition: state
-    entity_id: sun.sun
-    state: 'below_horizon'
-  - condition: state
+    for:
+      seconds: 7      
+  - platform: state
     entity_id: binary_sensor.0x00158d0002e29c47_occupancy
-    state: 'off'      
+    to: 'off'  
+    for:
+      seconds: 7    
+  condition:
+    - condition: state
+      entity_id: sun.sun
+      state: 'below_horizon'
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna
+          state: 'off'
+        - condition: state
+          entity_id: binary_sensor.0x00158d0002e29c47_occupancy
+          state: 'off'
   action:
   - service: light.turn_off   
     entity_id: light.postel_led_pasik_2   
@@ -1297,7 +1340,7 @@
     after: sunset        
   action:
   - service: switch.turn_on
-    entity_id: switch.stara_pracovna
+    entity_id: switch.balkon_zasuvka
     
 - id: Spalna Balkon - zatvorenie
   alias: Spalna Balkon - zatvorenie
@@ -1308,37 +1351,10 @@
         to: 'off'
   action:
   - service: switch.turn_off
-    entity_id: switch.stara_pracovna    
+    entity_id: switch.balkon_zasuvka    
    
     
-################################################################ Zapnutie rano PC
 
-- id: Zapnutie rano PC
-  alias: Zapnutie rano PC
-  trigger:
-  - platform: state
-    entity_id: sensor.samsung_s21_charger_type
-    from: "wireless"
-    to: 'none'
-  condition:
-  - condition: time
-    after: "08:00:00"
-    before: "09:00:00"
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
-  action:
-  - service: switch.turn_on   
-    entity_id: switch.notebook_firemny
-  - service: notify.mobile_app_samsung_s21
-    data: 
-        message: "Notebook sa zapol o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"      
-        data: 
-          ttl: 0
-          priority: high  
           
 ################################################################ LED Pasik - Stol 
           
@@ -1346,19 +1362,15 @@
   alias: Stol Nocne Svetlo 23:00 - 08:00
   mode: restart
   trigger:
-  - device_id: 16a0bb44063547848bdb9d695ff93fa5
-    domain: binary_sensor
+  - platform: state
     entity_id: binary_sensor.0x00158d0004494467_occupancy   
-    platform: device
-    type: motion
-  - device_id: 50c0132a39e7429b94ff69348bb0d911
-    domain: binary_sensor
+    to: 'on'
+  - platform: state
     entity_id: binary_sensor.0x00158d0002753dcc_occupancy
-    platform: device
-    type: motion    
+    to: 'on'  
   - platform: state
     entity_id: binary_sensor.0x54ef4410005a9493_occupancy
-    to: 'on'    
+    to: 'on'   
   condition:
   - condition: time
     after: "23:00:02"
@@ -1374,6 +1386,9 @@
   - service: light.turn_off  
     entity_id: light.wled  
     
+################################################################ LED Pasik - Stol TEST
+          
+
 - id: Stol Pracka
   alias: Stol Pracka
   mode: restart
@@ -1382,10 +1397,7 @@
         entity_id: sensor.washing_machine_washer_job_state
         from: 'spin'
         to: 'finish'
-  condition:    
-  - condition: state
-    entity_id: switch.pracka_zasuvka
-    state: 'on'  
+ 
   action:
   - service: light.turn_on
     data:
@@ -1406,12 +1418,12 @@
   alias: Stol Susicka
   mode: restart
   trigger:
-  - entity_id: sensor.susicka_zasuvka_energy_power
+  - entity_id: sensor.susicka_zasuvka_energy_power_2
     platform: numeric_state
     below: '2'
   condition:    
   - condition: state
-    entity_id: switch.susicka_zasuvka
+    entity_id: switch.susicka_zasuvka_2
     state: 'on'  
   action:
   - service: light.turn_on
@@ -1445,10 +1457,10 @@
       - condition: or
         conditions:    
           - condition: state
-            entity_id: device_tracker.samsung_s21
+            entity_id: device_tracker.samsung_s25
             state: 'home'       
           - condition: state
-            entity_id: device_tracker.samsung_s20
+            entity_id: device_tracker.samsung_s23
             state: 'home' 
   action:
   - service: tts.google_translate_say
@@ -1485,10 +1497,10 @@
       - condition: or
         conditions:    
           - condition: state
-            entity_id: device_tracker.samsung_s21
+            entity_id: device_tracker.samsung_s25
             state: 'home'       
           - condition: state
-            entity_id: device_tracker.samsung_s20
+            entity_id: device_tracker.samsung_s23
             state: 'home' 
   action:
   - service: tts.google_translate_say
@@ -1630,10 +1642,10 @@
       - condition: or
         conditions:    
           - condition: state
-            entity_id: device_tracker.samsung_s21
+            entity_id: device_tracker.samsung_s25
             state: 'home'       
           - condition: state
-            entity_id: device_tracker.samsung_s20
+            entity_id: device_tracker.samsung_s23
             state: 'home' 
   action:
   - service: climate.set_temperature
@@ -1641,13 +1653,17 @@
       entity_id: climate.bedroom_a_c
       hvac_mode: cool
       temperature: '23' 
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Spalna - Klimatizacia sa zapla {{ now().strftime('%H:%M:%S %A %d %B %Y') }}  Aktualna teplota je {{state_attr('sensor.ble_temperature_4c65a8dfc04a', 'mean')}} °C. "   
       data: 
         ttl: 0
-        priority: high     
-        
+        priority: high    
+  - delay: 01:00:00  
+  - service: switch.turn_on
+    entity_id: switch.bedroom_a_c_spi_mode
+    
+ 
         
 
 ###################################### Dovolenkovy rezim svetla
@@ -1676,33 +1692,27 @@
   alias: Dovolenkovy rezim pohyb
   mode: restart
   trigger:
-  - device_id: 16a0bb44063547848bdb9d695ff93fa5
-    domain: binary_sensor
+  - platform: state
     entity_id: binary_sensor.0x00158d0004494467_occupancy   
-    platform: device
-    type: motion
-  - device_id: 50c0132a39e7429b94ff69348bb0d911
-    domain: binary_sensor
+    to: 'on'
+  - platform: state
     entity_id: binary_sensor.0x00158d0002753dcc_occupancy
-    platform: device
-    type: motion 
-  - device_id: aa3e17113224f969d34e1aa7ca41d963
-    domain: binary_sensor  
+    to: 'on'
+  - platform: state
     entity_id: binary_sensor.0x54ef4410005a9493_occupancy    
-    platform: device
-    type: motion  
-  - device_id: 0c9e634ffafea2d386e862e71f38db7f
-    domain: binary_sensor  
+    to: 'on' 
+  - platform: state
     entity_id: binary_sensor.0x00158d0002e29c47_occupancy
-    platform: device
-    type: motion  
-  - device_id: 42e5a84b466385b34bcafeaa57190523
-    domain: binary_sensor
+    to: 'on'
+  - platform: state
     entity_id: binary_sensor.ble_motion_senzor_pohybu_spalna    
-    platform: device
-    type: motion     
+    to: 'on'  
+  - platform: state
+    entity_id: binary_sensor.everything_presence_lite_6acba0_zone_1_occupancy    
+    to: 'on'     
+    
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Pohyb v byte {{ trigger.from_state.attributes.friendly_name }} o {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
@@ -1746,35 +1756,35 @@
       - platform: sun
         event: 'sunset'
   action:
-  - service: mqtt.publish
-    data:
-      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
-      payload: '{"position":"0"}'
+#  - service: mqtt.publish
+#    data:
+#      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
+#      payload: '{"position":"0"}'
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/0x54ef441000450603/set
-      payload: '{"position":"0"}'      
+      payload: '{"position": 0}'  
       
 ######### Vytiahnut s vychodom slnka - Pracovna
-- id: Zaluzie_zimny_rezim_otvorenie_pracovna
-  alias: Zaluzie_zimny_rezim_otvorenie_pracovna
-  trigger:
-      - platform: sun
-        event: 'sunrise'
-  condition:
-  - condition: state
-    entity_id: input_boolean.zimny_rezim
-    state: 'on'          
-  action:
-  - service: mqtt.publish
-    data:
-      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
-      payload: '{"position":"100"}'
-  - delay: 00:00:35   
-  - service: mqtt.publish
-    data:
-      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
-      payload: '{"position":"95"}'  
+#- id: Zaluzie_zimny_rezim_otvorenie_pracovna
+#  alias: Zaluzie_zimny_rezim_otvorenie_pracovna
+#  trigger:
+#      - platform: sun
+#        event: 'sunrise'
+#  condition:
+#  - condition: state
+#    entity_id: input_boolean.zimny_rezim
+#    state: 'on'          
+#  action:
+#  - service: mqtt.publish
+#    data:
+#      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
+#      payload: '{"position":"100"}'
+#  - delay: 00:00:35   
+#  - service: mqtt.publish
+#    data:
+#      topic: zigbee2mqtt/0x5c0272fffedfd8a2/set
+#      payload: '{"position":"95"}'  
 
 ######### Vytiahnut s 10:00 slnka - Spalna
 - id: Zaluzie_zimny_rezim_otvorenie_spalna
@@ -1790,12 +1800,12 @@
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/0x54ef441000450603/set
-      payload: '{"position":"100"}'
+      payload: '{"position":100}'
   - delay: 00:00:35   
   - service: mqtt.publish
     data:
       topic: zigbee2mqtt/0x54ef441000450603/set
-      payload: '{"position":"95"}'        
+      payload: '{"position":95}'        
             
       
 ######### Zaluzie dolne otvorenie
@@ -1887,29 +1897,23 @@
 - id: Vypinac Kuchyna Prave tlacidlo
   alias: Vypinac Kuchyna Prave tlacidlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d00065038cd
-  condition:
-    condition: template
-    value_template: '{{ ''right'' == trigger.payload_json.action }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d00065038cd/action
+      payload: "single_right"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
-    entity_id:
-    - light.kuchyna_1
-    - light.kuchyna_2
-    - light.kuchyna_3
-    - light.kuchyna_4
-    - light.kuchyna_5    
+    entity_id: group.kuchyna
+ 
 
 ###########Lave 
 - id: Vypinac Kuchyna Lave tlacidlo
   alias: Vypinac Kuchyna Lave tlacidlo
   trigger:
-  - platform: mqtt
-    topic: zigbee2mqtt/0x00158d00065038cd
-  condition:
-    condition: template
-    value_template: '{{ ''left'' == trigger.payload_json.action }}'
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d00065038cd/action
+      payload: "single_left"
+      value_template: "{{ value }}"
   action:
     service: homeassistant.toggle
     entity_id: light.obyvacka_hlavne_svetlo 
@@ -1967,7 +1971,7 @@
     entity_id: sensor.xiaomi_vacuum_cleaner_main_brush_left
     below: '1'
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Vysavac - vymen alebo vycisti hlavnu kefu {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
@@ -1983,7 +1987,7 @@
     entity_id: sensor.xiaomi_vacuum_cleaner_side_brush_left
     below: '1'
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Vysavac - vymen alebo vycisti bocnu kefu {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
@@ -1998,7 +2002,7 @@
     entity_id: sensor.xiaomi_vacuum_cleaner_filter_left
     below: '1'
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Vysavac - vymen alebo vycisti filter {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
@@ -2013,32 +2017,320 @@
     entity_id: sensor.xiaomi_vacuum_cleaner_sensor_dirty_left
     below: '1'
   action:
-  - service: notify.mobile_app_samsung_s21
+  - service: notify.mobile_app_samsung_s25
     data: 
       message: "Vysavac - vycisti senzory {{ now().strftime('%H:%M:%S %A %d %B %Y') }}"
       data: 
         ttl: 0
-        priority: high          
+        priority: high    
+        
+###################### Zony
+
+# 01 - Kuchyna
+# 17 - Chodba
+# 19 - Obyvacka
+# 20 - Spalna
+# 21 - Pracovna
+
+- id: Vypinac Spalna Dvojklik Vysavac
+  alias: Vypinac Spalna Dvojklik Vysavac
+  trigger:
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002b45642/action
+      payload: "double_right"
+      value_template: "{{ value }}"
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 20
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
+     
+- id: Vypinac Pracovna Dvojklik Vysavac
+  alias: Vypinac Pracovna Dvojklik Vysavac
+  trigger:
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d000650329f/action
+      payload: "double_right"
+      value_template: "{{ value }}"
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 21
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
+    
+          
      
 
-  
-
-     
-
-      
+- id: Vypinac Obyvacka Dvojklik Vysavac
+  alias: Vypinac Obyvacka Dvojklik Vysavac
+  trigger:
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d0002afe6a9/action
+      payload: "double_right"
+      value_template: "{{ value }}"
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 19
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
  
-      
-      
+     
+- id: Vypinac Kuchyna Dvojklik Vysavac
+  alias: Vypinac Kuchyna Dvojklik Vysavac
+  trigger:
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d00065038cd/action
+      payload: "double_right"
+      value_template: "{{ value }}"
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 1
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner     
 
 
+#####################################################   Vysavanie izieb cez UI 
 
+
+- id: Vysavanie - Spalna
+  alias: Vysavanie - Spalna
+  trigger:
+  - platform: state
+    entity_id: input_boolean.vysavanie_spalna
+    to: 'on'
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 20
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
+     
+- id: Vysavanie - Pracovna
+  alias: Vysavanie - Pracovna
+  trigger:
+  - platform: state
+    entity_id: input_boolean.vysavanie_pracovna
+    to: 'on'
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 21
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
+    
+
+- id: Vysavanie - Obyvacka
+  alias: Vysavanie - Obyvacka
+  trigger:
+  - platform: state
+    entity_id: input_boolean.vysavanie_obyvacka
+    to: 'on'
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 19
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner
+ 
+- id: Vysavanie - Kuchyna
+  alias: Vysavanie - Kuchyna
+  trigger:
+  - platform: state
+    entity_id: input_boolean.vysavanie_kuchyna
+    to: 'on'
+  action:
+  - service: xiaomi_miio.vacuum_clean_segment
+    data:
+     segments: 1
+    target:
+     entity_id: vacuum.xiaomi_vacuum_cleaner      
+     
+- id: Vypnutie zonoveho vysavania
+  alias: Vypnutie zonoveho vysavania
+  trigger:
+  - platform: state
+    entity_id: input_boolean.vysavanie_kuchyna
+    to: 'off'
+  - platform: state
+    entity_id: input_boolean.vysavanie_pracovna
+    to: 'off'
+  - platform: state
+    entity_id: input_boolean.vysavanie_spalna
+    to: 'off'
+  - platform: state
+    entity_id: input_boolean.vysavanie_obyvacka
+    to: 'off'    
+  action:
+    - service: vacuum.stop
+      entity_id: vacuum.xiaomi_vacuum_cleaner  
+    - delay: 00:00:01    
+    - service: vacuum.return_to_base
+      entity_id: vacuum.xiaomi_vacuum_cleaner     
+     
     
     
-
-
+######### Notifikacia Obyvacka
+- id: Obyvacka - vetranie - otvor okno
+  alias: Obyvacka - vetranie - otvor okno 
+  trigger:
+    platform: time_pattern
+    minutes: '/1' 
+  condition:
+  - condition: and
+    conditions:
+      - condition: time
+        after: "09:00:00"
+        before: "23:00:00"  
+      - condition: template
+        value_template: "{{ states('sensor.0x00158d00025e9bcf_temperature')| float(0) | round(1) < states('sensor.ble_temperature_4c65a8d0b9be')| float(0)| round(1)  }}"
+      - condition: template
+        value_template: "{{ (states('sensor.ble_temperature_4c65a8d0b9be')| float(0) | round(1) - states('sensor.0x00158d00025e9bcf_temperature')| float(0)| round(1)) > 2  }}"
+      - condition: state
+        entity_id: binary_sensor.0x00158d00054dafc8_contact
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.zimny_rezim
+        state: 'off'           
+      - condition: or
+        conditions:    
+          - condition: state
+            entity_id: device_tracker.samsung_s25
+            state: 'home'       
+  action:
+  - service: notify.mobile_app_samsung_s25
+    data: 
+      message: "Otvor okno v obyvacke   Aktualna teplota vonku je {{states('sensor.0x00158d00025e9bcf_temperature')}} °C a vnutri je {{states('sensor.ble_temperature_4c65a8d0b9be')}} °C   {{ now().strftime('%H:%M:%S %A %d %B %Y') }} "   
+      data: 
+        ttl: 0
+        priority: high  
+  
+- id: Obyvacka - vetranie - zatvor okno
+  alias: Obyvacka - vetranie - zatvor okno
+  trigger:
+    platform: time_pattern
+    minutes: '/1' 
+  condition:
+  - condition: and
+    conditions:
+      - condition: time
+        after: "09:00:00"
+        before: "23:00:00"  
+      - condition: template
+        value_template: "{{ states('sensor.0x00158d00025e9bcf_temperature')| float(0) | round(1) > states('sensor.ble_temperature_4c65a8d0b9be')| float(0)| round(1)  }}"
+      - condition: state
+        entity_id: binary_sensor.0x00158d00054dafc8_contact
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.zimny_rezim
+        state: 'off'           
+      - condition: or
+        conditions:    
+          - condition: state
+            entity_id: device_tracker.samsung_s25
+            state: 'home'       
+  action:
+  - service: notify.mobile_app_samsung_s25
+    data: 
+      message: "Zatvor okno v obyvacke   Aktualna teplota vonku je {{states('sensor.0x00158d00025e9bcf_temperature')}} °C a vnutri je {{states('sensor.ble_temperature_4c65a8d0b9be')}} °C   {{ now().strftime('%H:%M:%S %A %d %B %Y') }} " 
+      data: 
+        ttl: 0
+        priority: high  
 
 
       
+
+- id: WC Svetlo ziarovka cez MQTT
+  alias: WC Svetlo ziarovka cez MQTT
+  mode: restart
+  trigger:
+    platform: mqtt
+    topic: 'stat/WC/RESULT'  # Téma MQTT správy
+  condition:
+    - condition: template
+      value_template: "{{ trigger.payload_json.get('Button1', {}).get('Action') == 'SINGLE' }}"  # Bezpečnejšie overenie správy z MQTT
+  action:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: "{{ is_state('light.wc_svetlo', 'off') }}"  # Kontrola, či je svetlo vypnuté
+        sequence:
+          - service: light.turn_on
+            entity_id: light.wc_svetlo
+          - service: >
+              {% if '08:00' <= now().strftime('%H:%M') <= '22:00' %}
+                xiaomi_miio.light_set_scene
+              {% else %}
+                xiaomi_miio.light_set_scene
+              {% endif %}
+            data:
+              scene: >
+                {% if '08:00' <= now().strftime('%H:%M') <= '22:00' %}
+                  1
+                {% else %}
+                  4
+                {% endif %}
+            entity_id: light.wc_svetlo
+      - conditions:
+        - condition: template
+          value_template: "{{ is_state('light.wc_svetlo', 'on') }}"  # Kontrola, či je svetlo zapnuté
+        sequence:
+          - service: light.turn_off
+            entity_id: light.wc_svetlo
+    
+     
+#####################################################  Kvety
+  
+        
+- id: Poliat Kvet Calathea
+  alias: Poliat Kvet Calathea
+  mode: restart
+  trigger:
+  - at: "20:00:00"
+    platform: time
+  condition:
+  - condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.calathea_pracovna_soil_moisture
+        below: 18
+      - condition: or
+        conditions:    
+          - condition: state
+            entity_id: device_tracker.samsung_s25
+            state: 'home'       
+          - condition: state
+            entity_id: device_tracker.samsung_s23
+            state: 'home' 
+  action:
+  - service: tts.google_translate_say
+    entity_id: media_player.living_room_speaker
+    data_template:
+        message: "Vlhkosť v pôde kvetu Kalatea poklesla pod 18 %. Choď poliať kvet v pracovni."
+        cache: false 
+        
+  
+#####################################################   Pracovna Zasuvka-Tlacidlo     
+        
+- id: Tlacidlo Pracovna Stol
+  alias: Tlacidlo Pracovna Stol
+  trigger:
+    - platform: mqtt
+      topic: zigbee2mqtt/0x00158d008b444846/action
+      payload: "single"
+      value_template: "{{ value }}"
+  action:
+    service: homeassistant.toggle
+    entity_id: switch.klimatizacia_zasuvka    #####  je to zasuvka pre PC   
+        
+        
+
+
+
+
 
       
 

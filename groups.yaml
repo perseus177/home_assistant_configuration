@@ -15,8 +15,8 @@
   telefony: 
     name: Telefony
     entities:
-      - device_tracker.samsung_s21
-      - device_tracker.samsung_s20
+      - device_tracker.samsung_s25
+      - device_tracker.samsung_s23
       
   kuchyna:
     name: Kuchyna

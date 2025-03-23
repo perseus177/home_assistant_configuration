@@ -16,14 +16,45 @@ views:
         
       - type: picture-entity
         entity: camera.xiaomi_cloud_map_extractor 
+        
+
+      - type: grid
+        columns: 4
+        cards:
+          - type: button
+            entity: input_boolean.vysavanie_kuchyna
+            name: Vysavanie
+            icon: mdi:stove
+          - type: button
+            entity: input_boolean.vysavanie_obyvacka
+            name: Vysavanie
+            icon: mdi:sofa            
+          - type: button
+            entity: input_boolean.vysavanie_spalna
+            name: Vysavanie
+            icon: mdi:bed-empty            
+          - type: button
+            entity: input_boolean.vysavanie_pracovna
+            name: Vysavanie
+            icon: mdi:briefcase            
+            
+
 
       - entities:
           - entity: sensor.0x00158d00025e9bcf_temperature
             name: Teplota
         hours_to_show: 48
         refresh_interval: 0
-        title: Vonku   Posledne 2 dni
+        title: Vonku   Posledne 2 dni - Zigbee
         type: history-graph
+        
+      - entities:
+          - entity: sensor.ble_vonku_0113_temperature
+            name: Teplota
+        hours_to_show: 48
+        refresh_interval: 0
+        title: Vonku   Posledne 2 dni - BLE
+        type: history-graph        
         
       - entities:
           - entity: sensor.ble_temperature_4c65a8d0b9be
@@ -61,7 +92,7 @@ views:
           - entity: sensor.elektromer_spotreba_posledne_vyuctovanie
             secondary_info: last-changed   
             name: Elektromer Spotreba Posledne Vyuctovanie              
-          - entity: sensor.elektromer_spotreba_kwh
+          - entity: sensor.elektromer_spotreba_novy_cyklus
             secondary_info: last-changed   
             name: Elektromer Spotreba Novy Uctovaci Cyklus            
           - entity: sensor.elektromer_spotreba_cena
@@ -70,9 +101,6 @@ views:
           - entity: sensor.elektromer_spotreba_cena_mesacne
             secondary_info: last-changed            
             name: Cena za mesiac               
-          - entity: sensor.0x0015bc001b02205d_energy
-            secondary_info: last-changed     
-            name: Spotreba
           - entity: sensor.0x0015bc001b02205d_power
             secondary_info: last-changed  
             name: Aktualna spotreba
@@ -95,71 +123,110 @@ views:
             average: true
             graph: true
             
-               
+      - entities:
+          - entity: sensor.ble_vonku_0113_temperature  
+            name: Teplota Vonku BLE
+        title: Zapnute zariadenia
+        type: 'custom:mini-graph-card' 
+        hour24: true
+        hours_to_show: 24 
+        show:
+            extrema: true
+            average: true
+            graph: true            
+            
+      - entities:
+          - entity: sensor.0x0015bc001b02205d_power  
+            name: Elektrina
+        title: Zapnute zariadenia
+        type: 'custom:mini-graph-card' 
+        hour24: true
+        hours_to_show: 24 
+        show:
+            extrema: true
+            average: true
+            graph: true                
 
 
       - entities:
           - entity: sensor.0x00158d00025e9bcf_temperature
             type: 'custom:multiple-entity-row'
             name: Vonku
+            format: precision2
             state_header: Aktualne
             secondary_info: last-changed
             entities:
               - entity: sensor.0x00158d00025e9bcf_humidity
                 name: Vlhkost
+                format: precision2
                 
                
 
           - entity: sensor.ble_temperature_4c65a8d0b9be
             type: 'custom:multiple-entity-row'
             name: Obyvacka
+            format: precision2            
             state_header: Aktualne
             secondary_info: last-changed
             entities:
               - entity: sensor.ble_humidity_4c65a8d0b9be
                 name: Vlhkost
+                format: precision2
 
           - entity: sensor.ble_temperature_4c65a8dfc04a
             type: 'custom:multiple-entity-row'
             name: Spalna
+            format: precision2            
             state_header: Aktualne
             secondary_info: last-changed
             entities:
               - entity: sensor.ble_humidity_4c65a8dfc04a
                 name: Vlhkost
+                format: precision2
                 
           - entity: sensor.ble_temperature_4c65a8dfacaf
             type: 'custom:multiple-entity-row'
             name: Pracovna
+            format: precision2                
             state_header: Aktualne
             secondary_info: last-changed
             entities:
               - entity: sensor.ble_humidity_4c65a8dfacaf
                 name: Vlhkost                
-
+                format: precision2
+                
           - entity: sensor.0x00158d0002d4786c_temperature
             type: 'custom:multiple-entity-row'
             name: Kupelna
+            format: precision2                
             state_header: Aktualne
             secondary_info: last-changed
             entities:
               - entity: sensor.0x00158d0002d4786c_humidity
-                name: Vlhkost    
+                name: Vlhkost   
+                format: precision2                
+
+          - entity: sensor.ble_vonku_0113_temperature
+            type: 'custom:multiple-entity-row'
+            name: Vonku BLE
+            format: precision2                
+            state_header: Aktualne
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.ble_vonku_0113_humidity
+                name: Vlhkost 
+                format: precision2                
 
         title: Teplotne Senzory
         type: entities
-        
-      - type: entities
-        entities:
-          - entity: light.wled_2
-            name: Balkon Svetlo
+
      
         
 
 
       - entities:
           - entity: switch.tv_zasuvka
-          - entity: switch.stara_pracovna 
+          - entity: switch.balkon_zasuvka
             name: Balkon
           - entity: light.obyvacka_hlavne_svetlo  
           - entity: light.obyvacka_lampa
@@ -169,8 +236,8 @@ views:
           # - entity: switch.pracovna
           - entity: switch.kupelna_ventilacka 
           - entity: switch.kupelna_svetlo 
-          - entity: switch.pracka_zasuvka  
-          - entity: switch.susicka_zasuvka  
+          - entity: switch.susicka_zasuvka_2
+          - entity: switch.pracka_zasuvka          
           - entity: light.kuchyna_pasik 
           - entity: switch.wc_ventilacka
           - entity: light.chodba_bodovka_1
@@ -184,7 +251,7 @@ views:
           - entity: light.wled_2  
             name: Balkon Svetlo     
           - entity: light.wled_3            
-            name: Pasik Parapeta   
+            name: Pasik Kuchyna   
           - entity: binary_sensor.0x00158d00054d661a_contact 
             name: Okno Spalna
           - entity: binary_sensor.0x00158d00054dafc8_contact
@@ -254,8 +321,6 @@ views:
             name: Hlavne Svetlo
           - entity: light.wled  
             name: Stol
-          - entity: light.wled_3               
-            name: Pasik Parapeta      
           - entity: light.obyvacka_hlavne_svetlo_ambilight
             name: Hlavne Svetlo Ambilight            
           - entity: light.obyvacka_lampa
@@ -277,12 +342,22 @@ views:
         image: /local/img/vacuum.png
         name: Robo
         vendor: xiaomi
+        
+ 
 
           
       - type: thermostat
         name: Klimatizacia
         entity: climate.room_air_conditioner   
-        
+
+      - entities:  
+          - entity: switch.room_air_conditioner_spi_mode 
+            name: Cistenie Vzduchu  
+          - entity: switch.room_air_conditioner_light 
+            name: Svetlo  
+        title: Klimatizacia
+        show_header_toggle: true
+        type: entities              
 
       - type: media-control
         name: Nvidia Shield
@@ -298,7 +373,7 @@ views:
         type: entities           
         
       - type: media-control
-        entity: media_player.samsung_ue55f9000         
+        entity: media_player.samsung         
 
       - entities:
           - entity: sensor.tv_zasuvka_energy_power
@@ -367,7 +442,16 @@ views:
     
       - type: thermostat
         name: Klimatizacia Spalna
-        entity: climate.bedroom_a_c    
+        entity: climate.bedroom_a_c  
+
+      - entities:  
+          - entity: switch.bedroom_a_c_spi_mode 
+            name: Cistenie Vzduchu  
+          - entity: switch.bedroom_a_c_light 
+            name: Svetlo  
+        title: Klimatizacia
+        show_header_toggle: true
+        type: entities          
         
       - type: thermostat
         name: Radiator
@@ -404,40 +488,9 @@ views:
         
 
       - entities:
-          - entity: switch.stara_pracovna
+          - entity: switch.balkon_zasuvka
             name: Balkon zo Spalne       
-          - entity: sensor.stara_pracovna_energy_power
-            type: 'custom:multiple-entity-row'
-            name:  Aktualna Spotreba 
-            state_header: Spotreba
-            secondary_info: last-changed
- 
-          - entity: sensor.stara_pracovna_energy_today
-            type: 'custom:multiple-entity-row'
-            name:  Dnesna Spotreba 
-            state_header: Spotreba
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.balkon_dnesna_spotreba
-                name: Cena
-                
-          - entity: sensor.stara_pracovna_energy_yesterday
-            type: 'custom:multiple-entity-row'
-            name:  Vcerajsia Spotreba 
-            state_header: Spotreba
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.balkon_vcerajsia_spotreba
-                name: Cena    
-                
-          - entity: sensor.stara_pracovna_energy_total
-            type: 'custom:multiple-entity-row'
-            name:  Celkova Spotreba 
-            state_header: Spotreba
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.balkon_total_spotreba 
-                name: Cena                 
+               
         title: Balkon 
         type: entities   
         
@@ -582,52 +635,30 @@ views:
           name: Praci Cyklus          
         - entity: sensor.washing_machine_washer_completion_time
           name: Dokoncenie programu 
-        - entity: sensor.pracka_zasuvka_energy_power
-          type: 'custom:multiple-entity-row'
-          name:  Aktualna Spotreba 
-          state_header: Spotreba
-          secondary_info: last-changed
- 
-        - entity: sensor.pracka_zasuvka_energy_today
-          type: 'custom:multiple-entity-row'
-          name:  Dnesna Spotreba 
-          state_header: Spotreba
-          secondary_info: last-changed
-          entities:
-            - entity: sensor.pracka_dnesna_spotreba
-              name: Cena
-                
-        - entity: sensor.pracka_zasuvka_energy_total
-          type: 'custom:multiple-entity-row'
-          name:  Celkova Spotreba 
-          state_header: Spotreba
-          secondary_info: last-changed
-          entities:
-            - entity: sensor.pracka_total_spotreba
-              name: Cena              
+
           
         title: Pracka
         type: entities          
         
       - entities:
-          - entity: switch.pracka_zasuvka
-            name: Pracka 
-            secondary_info: last-changed
-          - entity: switch.susicka_zasuvka
+          - entity: switch.susicka_zasuvka_2
             name: Susicka
-            secondary_info: last-changed            
+            secondary_info: last-changed    
+          - entity: switch.pracka_zasuvka
+            name: Pracka
+            secondary_info: last-changed                   
         title: Zasuvky
         show_header_toggle: true
         type: entities         
         
       - entities:
-          - entity: sensor.susicka_zasuvka_energy_power
+          - entity: sensor.susicka_zasuvka_energy_power_2
             type: 'custom:multiple-entity-row'
             name:  Aktualna Spotreba 
             state_header: Spotreba
             secondary_info: last-changed
  
-          - entity: sensor.susicka_zasuvka_energy_today
+          - entity: sensor.susicka_zasuvka_energy_today_2
             type: 'custom:multiple-entity-row'
             name:  Dnesna Spotreba 
             state_header: Spotreba
@@ -636,16 +667,44 @@ views:
               - entity: sensor.susicka_dnesna_spotreba
                 name: Cena
                 
-          - entity: sensor.susicka_zasuvka_energy_total
+          - entity: sensor.susicka_zasuvka_energy_total_2
             type: 'custom:multiple-entity-row'
             name:  Celkova Spotreba 
             state_header: Spotreba
             secondary_info: last-changed
             entities:
-              - entity: sensor.susicka_total_spotreba
+              - entity: sensor.susicka_total_spotreba_2
                 name: Cena                 
         title: Susicka
-        type: entities         
+        type: entities  
+        
+      - entities:
+          - entity: sensor.pracka_zasuvka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.pracka_zasuvka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.pracka_dnesna_spotreba
+                name: Cena
+        
+          - entity: sensor.pracka_zasuvka_energy_total          
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: pracka_total_spotreba
+                name: Cena                  
+                 
+        title: Pracka
+        type: entities          
         
 
     path: kupelna
@@ -683,7 +742,7 @@ views:
         type: entities
         
       - type: light
-        entity: light.kuchyna_pasik
+        entity: light.wled_3
 
       - entities:
         - entity: binary_sensor.dishwasher_door
@@ -744,9 +803,95 @@ views:
         title: Okno
         type: entities 
         
-      
+      - entities:
+          - entity: sensor.chladnicka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.chladnicka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.chladnicka_dnesna_spotreba
+                name: Cena
+                
+          - entity: sensor.chladnicka_energy_yesterday
+            type: 'custom:multiple-entity-row'
+            name:  Vcerajsia Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.chladnicka_vcerajsia_spotreba
+                name: Cena    
+                
+          - entity: sensor.chladnicka_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.chladnicka_total_spotreba
+                name: Cena                 
+        title: Chladnicka
+        type: entities       
         
+      - entities:
+          - entity: sensor.rura_zasuvka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.rura_zasuvka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.rura_dnesna_spotreba 
+                name: Cena 
+                
+          - entity: sensor.rura_zasuvka_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.rura_total_spotreba 
+                name: Cena                 
+        title: Rura
+        type: entities    
         
+      - entities:
+          - entity: sensor.umyvackazasuvka_energy_power
+            type: 'custom:multiple-entity-row'
+            name:  Aktualna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+ 
+          - entity: sensor.umyvackazasuvka_energy_today
+            type: 'custom:multiple-entity-row'
+            name:  Dnesna Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.susicka_dnesna_spotreba ######### Oprav - Vytvor novy senzor
+                name: Cena 
+                
+          - entity: sensor.umyvackazasuvka_energy_total
+            type: 'custom:multiple-entity-row'
+            name:  Celkova Spotreba 
+            state_header: Spotreba
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.susicka_total_spotreba_2 ######### Oprav - Vytvor novy senzor
+                name: Cena                 
+        title: Umyvacka Riadu
+        type: entities         
   
         
 
@@ -823,20 +968,30 @@ views:
   - badges: []
     cards:
       - entities:
-          - entity: switch.wc_svetlo
-            name: Svetlo
-            secondary_info: last-changed
+          - entity: light.wc_svetlo
+            name: Svetlo ziarovka
+            secondary_info: last-changed            
           - entity: switch.wc_ventilacka
             name: Ventilacka
             secondary_info: last-changed   
           - entity: sensor.wc_status
             name: Kvalita signalu
-            secondary_info: last-changed            
+            secondary_info: last-changed   
+            
+         
             
         title: WC Vypinac
         type: entities     
-        show_header_toggle: true          
+        show_header_toggle: true  
 
+      - entities:
+          - entity: switch.wc_svetlo
+            name: Svetlo vypinac
+            secondary_info: last-changed           
+        title: WC Svetlo Vypinac
+        type: entities     
+        show_header_toggle: true  
+ 
     path: wc
     title: WC    
 ###############################################Administration         
@@ -846,10 +1001,10 @@ views:
         title: System
         show_header_toggle: false
         entities:
-          - entity: sensor.installed_version
+          - entity: sensor.current_version
             name: Hassio Installed Version
             icon: mdi:home-assistant
-          - entity: sensor.latest_available_version
+          - entity: sensor.home_assistant_versions
             name: Hassio Current Version
             icon: mdi:home-assistant 
             
@@ -957,15 +1112,6 @@ views:
 
           - type: divider         
           
-      - entities:
-          - entity: input_boolean.zigbee_permit_join
-          - entity: timer.zigbee_permit_join
-          - entity: sensor.bridge_state
-        show_header_toggle: false
-        title: Zigbee
-        type: entities
-        icon: mdi:zigbee  
-        
       - entity: input_boolean.zimny_rezim
         type: button
         name: Zimny Rezim
@@ -1021,14 +1167,15 @@ views:
           icon: mdi:alarm-light
           url: http://192.168.0.119/       
         - type: weblink
-          name: WLED Parapeta
+          name: WLED Kuchyna
           icon: mdi:alarm-light
-          url: http://192.168.0.166/         
+          url: http://192.168.0.160/        
         - type: weblink            
           name: WLED Balkon
           icon: mdi:alarm-light
           url: http://192.168.0.152/ 
-          
+      
+
           
           
           
@@ -1058,17 +1205,7 @@ views:
         title: Router
         type: entities
         
-
-      - entities:
-          - entity: switch.satelit_zasuvka
-            secondary_info: last-changed
-            name: Zasuvka
-          - entity: sensor.satelit_zasuvka_rssi
-            secondary_info: last-changed          
-            name: Kvalita signalu
-     
-        title: Satelit
-        type: entities        
+       
 
       - type: glance
         title: Component Count
@@ -1109,14 +1246,20 @@ views:
             icon: mdi:view-list
           - entity: sensor.count_lights
             name: Svetla
-            icon: mdi:coach-lamp      
+            icon: mdi:coach-lamp  
+          - entity: sensor.devices_with_battery_type_aaa
+            name: AAA
+            icon: mdi:battery
+          - entity: sensor.devices_with_battery_type_cr2032
+            name: CR2032
+            icon: mdi:battery            
 
       - type: entities
         title: Internet            
         entities:
           - type: custom:bar-card
             title: Download
-            entity: sensor.speedtest_download
+            entity: sensor.speedtest_stiahnut
             height: 20px
             animation: 'off'
             indicator: 'off'
@@ -1133,7 +1276,7 @@ views:
                 
           - type: custom:bar-card
             title: Upload
-            entity: sensor.speedtest_upload
+            entity: sensor.speedtest_nahrat
             height: 20px
             animation: 'off'
             indicator: 'off'
@@ -1165,34 +1308,52 @@ views:
                 from: 1
                 to: 10 
                 
+
+
       - type: custom:auto-entities
         card:
-         title: Baterie
-         type: custom:bar-card
-         unit_of_measurement: "%"
-         height: 20px
-         animation: 'off'
-         indicator: 'off'         
-         severity:
-         - color: red         
-           from: 0
-           to: 35
-         - color: orange  
-           from: 36
-           to: 75
-         - color: green           
-           from: 76
-           to: 100
+           type: entities
+           title: Slaba Bateria
+           debug: false
+           card_mod:
+              class: inline-card
         filter:
-          include: 
-          - entity_id: "*battery"
-          - entity_id: "*ble_battery*"          
+           include:
+                - integration: battery_notes
+                  domain: sensor
+                  attributes:
+                     device_class: battery
+                  state: < 35
+                  options:
+                       type: custom:template-entity-row
+                       entity: this.entity_id
+                       name: >-
+                           {{state_attr(config.entity,'friendly_name')}}
+                           ({{state_attr(config.entity,'battery_type_and_quantity')}})
+                       secondary: >-
+                           Replaced: {{state_attr(config.entity,'battery_last_replaced')|relative_time() }} ago
+                       state: '{{ states(config.entity)|int(0) }}%'
+                       hold_action: |
+                           {
+                             "action": "call-service",
+                             "service": "battery_notes.set_battery_replaced",
+                             "data": {
+                               "device_id": "{{ device_id(config.entity) }}",
+                               },
+                             "confirmation": {
+                               "text": "Update Battery Replaced Date",
+                               },
+                           }
+                - integration: battery_notes
+                  domain: binary_sensor
+                  attributes:
+                     device_class: battery
+                  state: 'on'
+        exclude:
+           - integration: mobile_app
         sort:
-            method: state
-            reverse: false
-            numeric: true
-
-
+           method: state
+           numeric: true
 
     path: administration
     title: Administration  

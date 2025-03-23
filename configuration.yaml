@@ -8,6 +8,8 @@ homeassistant:
   customize: !include customize.yaml
   external_url: !secret external_url
   internal_url: !secret internal_url
+  country: SK
+  currency: EUR
 
     
 
@@ -24,6 +26,10 @@ http:
   - 127.0.0.1
   - 172.30.33.4
   - 172.30.33.5  
+  - 172.30.33.6
+  ip_ban_enabled: true
+  login_attempts_threshold: 10
+  
 
 # Text to speech
 tts:
@@ -38,7 +44,7 @@ automation: !include automations.yaml
 sensor: !include sensors.yaml
 
 recorder:
-  purge_keep_days: 2
+  purge_keep_days: 5
   exclude:
     domains:
       - automation
@@ -48,11 +54,11 @@ recorder:
     entities:
       - sun.sun # Don't record sun data
       - sensor.date
+      - sensor.samsung_s21_active_notification_count
     event_types:
       - call_service # Don't record service calls  
-  
-  
-  
+ 
+
 logger:
   default: warn
   logs:
@@ -61,6 +67,7 @@ logger:
     homeassistant.components.androidtv.media_player: fatal
     homeassistant.components.media_player: fatal
     homeassistant.components.camera: fatal
+    homeassistant.components.androidtv_remote: fatal
     custom_components.xiaomi_cloud_map_extractor: fatal
     DenonAVR: fatal
     androidtv.adb_manager.adb_manager_async: fatal
@@ -68,8 +75,22 @@ logger:
     DenonSSDP: fatal
     pychromecast.socket_client: fatal
     homeconnect.sseclient: fatal
-    homeassistant.components.webhook: debug
-  
+    async_upnp_client.profiles.profile: fatal
+ 
+
+  #====================
+  #=== CPU Temperature
+  #====================
+
+command_line:
+  - sensor:
+      name: "CPU Temp"
+      command: "cat /sys/class/thermal/thermal_zone0/temp"
+      unit_of_measurement: "°C"
+      value_template: '{{ value | multiply(0.001) | round(0) }}'    
+
+
+   
     
 
 
@@ -90,13 +111,27 @@ lovelace:
   - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
     type: module  
   - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
-    type: module      
+    type: module  
+  - url: /hacsfiles/lovelace-template-entity-row/template-entity-row.js
+    type: module    
+  - url: /hacsfiles/battery-state-card.js/ battery-state-card.js
+    type: module  
+  - url: /hacsfiles/lovelace-plotly-graph-card/plotly-graph-card.js
+    type: module
+  - url: /hacsfiles/lovelace-flower-card/flower-card.js
+    type: module
+                                    
+    
+
+
+    
+    
+   
                     
 
 # Zigbee 
 mqtt:
-  broker: core-mosquitto # This will have to be your mqtt broker, Mosquitto addon is recommended.
-  discovery: true
+  sensor: !include sensors_mqtt.yaml
 
 input_boolean:
   zigbee_permit_join:
@@ -118,6 +153,26 @@ input_boolean:
     
   zaluzie_horne_otvorenie:
     name: Zaluzie horne otvorenie
+    initial: off    
+    
+  vysavanie_kuchyna:
+    name: Vysavanie Kuchyna
+    initial: off
+
+  vysavanie_chodba:
+    name: Vysavanie Chodba
+    initial: off
+
+  vysavanie_obyvacka:
+    name: Vysavanie Obyvacka
+    initial: off
+
+  vysavanie_spalna:
+    name: Vysavanie Spalna
+    initial: off
+
+  vysavanie_pracovna:
+    name: Vysavanie Pracovna
     initial: off    
     
 
@@ -188,37 +243,10 @@ light:
 #    token: !secret vysavac_tokken
     
 
-# Satelit 
-media_player:
-  - platform: enigma2
-    host: 192.168.0.136
-    port: 80
-    use_channel_icon: true    
-    username: !secret sat_username
-    password: !secret sat_passwd
 
-# Nvidia Shield     
-  - platform: androidtv
-    name: NVIDIA Shield
-    host: 192.168.0.108   
-    
-    
-
-# Umyvacka Riadu
-home_connect:
-  client_id: !secret umyvacka_username
-  client_secret: !secret umyvacka_passwd 
 
 # Google Home
 google_assistant: !include google_assistant.yaml
-
-
-# TasmoAdmin
-panel_iframe:
-  tasmoadmin:
-    title: TasmoAdmin
-    icon: mdi:lightbulb-on
-    url: http://192.168.0.176:9541
     
 camera:
   - platform: xiaomi_cloud_map_extractor
@@ -234,12 +262,16 @@ camera:
 # Bluetooth Senzory
 ble_monitor:
      active_scan: True
-     discovery: True
-     decimals: 2
+     discovery: False
      devices:
-      - mac: '7C:49:EB:B7:9B:96'
-      - mac: '7C:49:EB:B4:67:14'
+##################################### Pracovna        
+      - mac: '4C:65:A8:DF:AC:AF'
+##################################### Spalna       
+      - mac: '4C:65:A8:DF:C0:4A'
+##################################### Obyvacka       
       - mac: '4C:65:A8:D0:B9:BE'
+    
+
 ##################################### Kanvica      
       - mac: 'AC:9A:22:F2:96:D0'
 ##################################### Ovladac      
@@ -258,14 +290,8 @@ ble_monitor:
         reset_timer: 25
         name: 'Senzor Pohybu Spalna'        
       
-# Zapnutie Notebooku 
-wake_on_lan:
-    mac: '04:0E:3C:C9:FB:BB'
-    
-switch:
-  - platform: wake_on_lan
-    mac: '04:0E:3C:C9:FB:BB'
-    name: Notebook Firemny
+
+
 
 
        
